@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}موجودی انبار | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+
+  {% include "partials/page_header.html" with title="موجودی انبار" description="گزارش کامل موجودی محصولات در انبار شرکت" icon="warehouse" %}
+
+  <!-- Stat cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="stat-card bg-gradient-teal">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">ارزش کل انبار</p>
+          <p class="text-2xl font-bold ltr-nums">{{ total_value|fa_number }}&nbsp;</p>
+          <p class="text-[11px] text-white/70">تومان</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          {% include "partials/icon.html" with icon="trending" %}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card bg-gradient-emerald">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">تعداد اقلام</p>
+          <p class="text-2xl font-bold ltr-nums">{{ products|length|fa_number }}</p>
+          <p class="text-[11px] text-white/70">نوع محصول</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          {% include "partials/icon.html" with icon="package" %}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card bg-gradient-amber">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">موجودی کم</p>
+          <p class="text-2xl font-bold ltr-nums">{{ low_stock_count|fa_number }}</p>
+          <p class="text-[11px] text-white/70">قلم نیاز به تأمین</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card bg-gradient-rose">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">ناموجود</p>
+          <p class="text-2xl font-bold ltr-nums">{{ out_of_stock_count|fa_number }}</p>
+          <p class="text-[11px] text-white/70">قلم ناموجود</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventory table -->
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">گزارش موجودی به تفکیک محصول</h2>
+    </div>
+    <div class="p-5 overflow-x-auto">
+      <table class="data-table w-full">
+        <thead>
+          <tr>
+            <th>محصول</th>
+            <th>برند</th>
+            <th>دسته‌بندی</th>
+            <th>موجودی</th>
+            <th>قیمت واحد</th>
+            <th>ارزش کل</th>
+            <th>وضعیت</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr id="product-{{ p.id }}">
+            <td>
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">{{ p.image_emoji }}</span>
+                <span class="font-medium">{{ p.name }}</span>
+              </div>
+            </td>
+            <td class="text-slate-500">{{ p.brand.name }}</td>
+            <td class="text-slate-500">{{ p.get_category_display }}</td>
+            <td>
+              <div class="flex flex-col gap-1">
+                <span class="font-bold ltr-nums">{{ p.stock|fa_number }} {{ p.unit }}</span>
+                <div class="stock-bar">
+                  {% percentage p.stock 500 as pct %}
+                  <div class="stock-bar-fill {% if p.stock < 60 %}low{% elif p.stock < 150 %}medium{% else %}high{% endif %}"
+                       style="width: {% if pct > 100 %}100{% else %}{{ pct }}{% endif %}%"></div>
+                </div>
+              </div>
+            </td>
+            <td class="ltr-nums">{{ p.price|fa_number }}</td>
+            <td class="ltr-nums font-bold">{{ p.total_value|fa_number }}</td>
+            <td>
+              {% if p.is_out_of_stock %}
+              <span class="badge badge-danger">ناموجود</span>
+              {% elif p.is_low_stock %}
+              <span class="badge badge-warning">موجودی کم</span>
+              {% else %}
+              <span class="badge badge-success">موجود</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="text-center py-8 text-slate-400">هیچ محصولی ثبت نشده است</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

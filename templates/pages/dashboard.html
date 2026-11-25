@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}داشبورد مدیریت | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+
+  {% include "partials/page_header.html" with title="داشبورد مدیریت" description="نمای کلی از وضعیت کلینیک‌ها، سفارش‌ها و درآمدها" icon="dashboard" %}
+
+  <!-- Stats grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+    <div class="stat-card bg-gradient-teal">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2 min-w-0">
+          <p class="text-sm font-medium text-white/80">محصولات فعال</p>
+          <p class="text-2xl md:text-3xl font-bold tracking-tight ltr-nums">{{ products_count|fa_number }}</p>
+          <div class="flex items-center gap-1 text-xs">
+            <span class="text-emerald-100">▲ ۳ قلم جدید</span>
+            <span class="text-white/60">نسبت به ماه قبل</span>
+          </div>
+        </div>
+        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20">
+          {% include "partials/icon.html" with icon="package" %}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card bg-gradient-emerald">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2 min-w-0">
+          <p class="text-sm font-medium text-white/80">مشتریان فعال</p>
+          <p class="text-2xl md:text-3xl font-bold tracking-tight ltr-nums">{{ customers_count|fa_number }}</p>
+          <div class="flex items-center gap-1 text-xs">
+            <span class="text-emerald-100">▲ ۸٪ رشد</span>
+            <span class="text-white/60">نسبت به ماه قبل</span>
+          </div>
+        </div>
+        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20">
+          {% include "partials/icon.html" with icon="stethoscope" %}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card bg-gradient-cyan">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2 min-w-0">
+          <p class="text-sm font-medium text-white/80">سفارش‌های در جریان</p>
+          <p class="text-2xl md:text-3xl font-bold tracking-tight ltr-nums">{{ orders_in_progress|fa_number }}</p>
+          <div class="flex items-center gap-1 text-xs">
+            <span class="text-emerald-100">▲ ۱۲٪ افزایش</span>
+            <span class="text-white/60">نسبت به ماه قبل</span>
+          </div>
+        </div>
+        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20">
+          {% include "partials/icon.html" with icon="cart" %}
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card bg-gradient-teal">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2 min-w-0">
+          <p class="text-sm font-medium text-white/80">درآمد ماه جاری</p>
+          <p class="text-2xl md:text-3xl font-bold tracking-tight ltr-nums">{{ current_month_income|fa_number }}&nbsp;</p>
+          <p class="text-[11px] text-white/70">تومان</p>
+          <div class="flex items-center gap-1 text-xs">
+            <span class="text-emerald-100">▲ ۲۳٪ رشد</span>
+            <span class="text-white/60">نسبت به ماه قبل</span>
+          </div>
+        </div>
+        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20">
+          {% include "partials/icon.html" with icon="trending" %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div class="card lg:col-span-2">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+        <h2 class="text-base font-semibold text-slate-800">روند درآمد ماهانه</h2>
+      </div>
+      <div class="p-5">
+        <div style="height: 288px;">
+          <canvas id="incomeChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+        <h2 class="text-base font-semibold text-slate-800">توزیع دسته‌بندی محصولات</h2>
+      </div>
+      <div class="p-5">
+        <div style="height: 288px;">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lower grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    <!-- Recent orders -->
+    <div class="card lg:col-span-2">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+        <h2 class="text-base font-semibold text-slate-800">سفارش‌های اخیر</h2>
+        <a href="{% url 'orders_list' %}" class="text-xs text-teal-600 hover:text-teal-700 font-medium">مشاهده همه</a>
+      </div>
+      <div class="p-5 overflow-x-auto">
+        <table class="data-table w-full">
+          <thead>
+            <tr>
+              <th>شماره سفارش</th>
+              <th>مشتری</th>
+              <th>مبلغ</th>
+              <th>وضعیت</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in recent_orders %}
+            <tr>
+              <td class="font-mono text-xs">{{ o.number }}</td>
+              <td class="font-medium">{{ o.customer.name }}</td>
+              <td class="ltr-nums">{{ o.total|fa_number }} ت</td>
+              <td>
+                {% if o.status == 'pending' %}<span class="badge badge-warning">در انتظار</span>
+                {% elif o.status == 'shipped' %}<span class="badge badge-info">ارسال شده</span>
+                {% elif o.status == 'delivered' %}<span class="badge badge-teal">تحویل شده</span>
+                {% elif o.status == 'confirmed_received' %}<span class="badge badge-success">تأیید دریافت</span>
+                {% else %}<span class="badge badge-neutral">{{ o.get_status_display }}</span>{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Low stock alert -->
+    <div class="card">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+        <h2 class="text-base font-semibold text-slate-800">هشدار موجودی کم</h2>
+      </div>
+      <div class="p-5 space-y-3 max-h-72 overflow-y-auto scrollbar-thin">
+        {% for p in low_stock_products %}
+        <div class="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50">
+          <div class="text-2xl">{{ p.image_emoji }}</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate">{{ p.name }}</p>
+            <p class="text-xs text-slate-500">{% if p.brand %}{{ p.brand.name }}{% endif %}</p>
+          </div>
+          <div class="text-left">
+            <p class="text-sm font-bold text-rose-600 ltr-nums">{{ p.stock|fa_number }}</p>
+            <p class="text-[10px] text-slate-500">{{ p.unit }}</p>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-sm text-slate-400 py-6">موجودی کم وجود ندارد</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Brand sales -->
+  <div class="card">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">فروش به تفکیک برند</h2>
+    </div>
+    <div class="p-5">
+      <div style="height: 256px;">
+        <canvas id="brandChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const incomeData = {{ monthly_income_json|safe|default:"[]" }};
+  const categoryData = {{ category_data_json|safe|default:"[]" }};
+  const brandData = {{ sales_by_brand_json|safe|default:"[]" }};
+
+  // Wait for Chart.js to load
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      // Income chart
+      const incomeCtx = document.getElementById('incomeChart');
+      if (incomeCtx && window.Chart) {
+        const amounts = incomeData.map(d => d.amount);
+        new Chart(incomeCtx, {
+          type: 'line',
+          data: {
+            labels: incomeData.map(d => d.month),
+            datasets: [{
+              label: 'درآمد (تومان)',
+              data: amounts,
+              borderColor: '#0d9488',
+              backgroundColor: 'rgba(20, 184, 166, 0.15)',
+              fill: true,
+              tension: 0.4,
+              borderWidth: 3,
+              pointBackgroundColor: '#0d9488',
+              pointRadius: 4,
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    return new Intl.NumberFormat('fa-IR').format(ctx.raw) + ' تومان';
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                ticks: {
+                  callback: function(v) { return (v / 1000000) + 'م'; }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // Category chart
+      const catCtx = document.getElementById('categoryChart');
+      if (catCtx && window.Chart) {
+        const catLabels = {
+          'hydrocolloid': 'پانسمان هیدروکلوئید',
+          'foam': 'پانسمان فوم',
+          'gel': 'ژل درمانی',
+          'bandage': 'بانداژ',
+          'ointment': 'پماد',
+          'film': 'پانسمان فیلمی',
+          'antimicrobial': 'آنتی‌باکتریال',
+          'other': 'سایر'
+        };
+        const colors = ['#0d9488', '#10b981', '#06b6d4', '#3b82f6', '#14b8a6', '#34d399', '#22d3ee', '#0891b2'];
+        new Chart(catCtx, {
+          type: 'doughnut',
+          data: {
+            labels: categoryData.map(d => catLabels[d.category] || d.category),
+            datasets: [{
+              data: categoryData.map(d => d.count || d.total || 1),
+              backgroundColor: colors,
+              borderWidth: 2,
+              borderColor: '#fff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { font: { size: 11 } }
+              }
+            }
+          }
+        });
+      }
+
+      // Brand chart
+      const brandCtx = document.getElementById('brandChart');
+      if (brandCtx && window.Chart) {
+        new Chart(brandCtx, {
+          type: 'bar',
+          data: {
+            labels: brandData.map(d => d.name),
+            datasets: [{
+              label: 'فروش',
+              data: brandData.map(d => d.sales),
+              backgroundColor: '#0d9488',
+              borderRadius: 6,
+              barThickness: 28
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            }
+          }
+        });
+      }
+    }, 100);
+  });
+</script>
+{% endblock %}

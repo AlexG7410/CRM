@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}گزارش فروش بازاریابی | APP CRM متخصص{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+        {% include "partials/icon.html" with icon="chart" %}
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold text-slate-800">گزارش فروش بازاریابی</h1>
+        <p class="text-sm text-slate-500 mt-0.5">تحلیل فروش و عملکرد بازاریابی</p>
+      </div>
+    </div>
+    <a href="{% url 'sales_report_export_excel' %}" class="btn-outline text-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      خروجی اکسل
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="stat-card bg-gradient-teal">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">کل فروش</p>
+        <p class="text-2xl font-bold ltr-nums">{{ total_sales|fa_number }}&nbsp;</p>
+        <p class="text-[11px] text-white/70">تومان</p>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-emerald">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">کل پورسانت</p>
+        <p class="text-2xl font-bold ltr-nums">{{ total_commission|fa_number }}&nbsp;</p>
+        <p class="text-[11px] text-white/70">تومان</p>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-cyan">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">تعداد سفارش‌ها</p>
+        <p class="text-2xl font-bold ltr-nums">{{ orders|length|fa_number }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">روند فروش ماهانه</h2>
+    </div>
+    <div class="p-5">
+      <div style="height: 288px;">
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">فروش به تفکیک نوع مشتری</h2>
+    </div>
+    <div class="p-5 overflow-x-auto">
+      <table class="data-table w-full">
+        <thead>
+          <tr>
+            <th>نوع مشتری</th>
+            <th>تعداد مشتریان</th>
+            <th>تعداد سفارش‌ها</th>
+            <th>مبلغ فروش</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for stat in customer_type_stats %}
+          <tr>
+            <td class="font-medium">{{ stat.label }}</td>
+            <td class="ltr-nums">{{ stat.count|fa_number }}</td>
+            <td class="ltr-nums">{{ stat.orders|fa_number }}</td>
+            <td class="ltr-nums font-bold">{{ stat.sales|fa_number }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">سفارش‌های اخیر</h2>
+    </div>
+    <div class="p-5 overflow-x-auto">
+      <table class="data-table w-full">
+        <thead>
+          <tr>
+            <th>شماره</th>
+            <th>مشتری</th>
+            <th>تاریخ</th>
+            <th>مبلغ</th>
+            <th>پورسانت</th>
+            <th>وضعیت</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for o in orders %}
+          <tr>
+            <td class="font-mono text-xs">{{ o.number }}</td>
+            <td class="font-medium">{{ o.customer.name }}</td>
+            <td class="text-slate-500 ltr-nums">{{ o.created_at|date:"Y/m/d"|persian_digits }}</td>
+            <td class="ltr-nums font-bold">{{ o.total|fa_number }}</td>
+            <td class="ltr-nums text-teal-700">{{ o.commission_amount|fa_number }}</td>
+            <td>{{ o.get_status_display }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+  const monthlyData = {{ monthly_data_json|safe|default:"[]" }};
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      const ctx = document.getElementById('salesChart');
+      if (ctx && window.Chart) {
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: monthlyData.map(d => d.month),
+            datasets: [{
+              label: 'فروش (تومان)',
+              data: monthlyData.map(d => d.amount),
+              backgroundColor: function(ctx) {
+                const chart = ctx.chart;
+                const {ctx: c, chartArea} = chart;
+                if (!chartArea) return '#10b981';
+                const gradient = c.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                gradient.addColorStop(0, '#0d9488');
+                gradient.addColorStop(1, '#10b981');
+                return gradient;
+              },
+              borderRadius: 8,
+              barThickness: 36
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    return new Intl.NumberFormat('fa-IR').format(ctx.raw) + ' تومان';
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                ticks: {
+                  callback: function(v) { return (v / 1000000) + 'م'; }
+                }
+              }
+            }
+          }
+        });
+      }
+    }, 100);
+  });
+</script>
+{% endblock %}
+{% endblock %}

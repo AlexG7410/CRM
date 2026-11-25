@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}صدور فاکتور جدید | APP CRM متخصص{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up max-w-4xl mx-auto">
+
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{% url 'invoices' %}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      {% include "partials/icon.html" with icon="file" %}
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">صدور فاکتور جدید</h1>
+      <p class="text-sm text-slate-500 mt-0.5">ثبت فاکتور یا پیش فاکتور برای سفارش</p>
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'error' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">اطلاعات فاکتور</h2>
+    </div>
+    <div class="p-5">
+      <form method="post" action="{% url 'invoice_add' %}" id="invoice-form">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div class="md:col-span-2">
+            <label class="form-label">سفارش *</label>
+            <select name="order" required class="form-select" id="order-select">
+              <option value="">— انتخاب سفارش —</option>
+              {% for o in orders %}
+              <option value="{{ o.id }}" data-customer="{{ o.customer.name }}" data-total="{{ o.total }}">
+                {{ o.number }} - {{ o.customer.name }} (مبلغ: {{ o.total|fa_number }} تومان)
+              </option>
+              {% endfor %}
+            </select>
+            {% if not orders %}
+            <p class="text-xs text-amber-600 mt-1">⚠️ سفارشی برای صدور فاکتور وجود ندارد. ابتدا یک سفارش ثبت کنید.</p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label class="form-label">نوع سند</label>
+            <select name="type" class="form-select">
+              {% for value, label in types %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">وضعیت</label>
+            <select name="status" class="form-select">
+              {% for value, label in statuses %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">مبلغ پایه (تومان) *</label>
+            <input type="number" name="amount" id="amount-input" required min="1" class="form-input" placeholder="مثلاً: 1000000" oninput="updateTotal()">
+          </div>
+
+          <div>
+            <label class="form-label">تاریخ صدور</label>
+            <input type="date" name="issue_date" class="form-input">
+          </div>
+
+          <div>
+            <label class="form-label">تاریخ سررسید</label>
+            <input type="date" name="due_date" class="form-input">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="form-label">یادداشت</label>
+            <textarea name="notes" rows="3" class="form-textarea" placeholder="توضیحات فاکتور..."></textarea>
+          </div>
+
+        </div>
+
+        <!-- Live calculation preview -->
+        <div class="mt-4 p-4 rounded-xl bg-gradient-to-br from-teal-50 to-emerald-50">
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p class="text-xs text-slate-500">مبلغ پایه</p>
+              <p id="amount-display" class="text-lg font-bold text-slate-700 ltr-nums">۰ ت</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500">مالیات (۱۰٪)</p>
+              <p id="tax-display" class="text-lg font-bold text-slate-700 ltr-nums">۰ ت</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500">مبلغ نهایی</p>
+              <p id="total-display" class="text-lg font-bold text-teal-700 ltr-nums">۰ ت</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6 pt-4 border-t border-slate-100">
+          <button type="submit" class="btn-gradient">
+            صدور فاکتور
+          </button>
+          <a href="{% url 'invoices' %}" class="btn-outline">انصراف</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function formatFa(num) {
+  return new Intl.NumberFormat('fa-IR').format(num) + ' ت';
+}
+
+function updateTotal() {
+  const amount = parseInt(document.getElementById('amount-input').value) || 0;
+  const tax = Math.round(amount * 0.1);
+  const total = amount + tax;
+  document.getElementById('amount-display').textContent = formatFa(amount);
+  document.getElementById('tax-display').textContent = formatFa(tax);
+  document.getElementById('total-display').textContent = formatFa(total);
+}
+
+// Auto-fill amount from selected order
+document.getElementById('order-select').addEventListener('change', function() {
+  const opt = this.options[this.selectedIndex];
+  const total = opt.getAttribute('data-total');
+  if (total) {
+    document.getElementById('amount-input').value = total;
+    updateTotal();
+  }
+});
+</script>
+{% endblock %}

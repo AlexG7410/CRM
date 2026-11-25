@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}ثبت تراکنش انبار | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up max-w-4xl mx-auto">
+
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{% url 'warehouse' %}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      {% include "partials/icon.html" with icon="boxes" %}
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">ثبت تراکنش انبار</h1>
+      <p class="text-sm text-slate-500 mt-0.5">ثبت ورود یا خروج کالا از انبار</p>
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'error' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">اطلاعات تراکنش</h2>
+    </div>
+    <div class="p-5">
+      <form method="post" action="{% url 'warehouse_add' %}">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div>
+            <label class="form-label">محصول *</label>
+            <select name="product" required class="form-select" id="product-select">
+              <option value="">— انتخاب کنید —</option>
+              {% for p in products %}
+              <option value="{{ p.id }}" data-unit="{{ p.unit }}" data-stock="{{ p.stock }}" data-name="{{ p.name }}">{{ p.image_emoji }} {{ p.name }} (موجودی: {{ p.stock|fa_number }} {{ p.unit }})</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">موجودی فعلی</label>
+            <div id="current-stock-display" class="form-input bg-slate-50 text-slate-600">
+              <span class="text-slate-400">ابتدا محصول را انتخاب کنید</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">نوع تراکنش</label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="flex items-center gap-2 p-2.5 rounded-lg border-2 border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 cursor-pointer">
+                <input type="radio" name="type" value="in" checked class="h-4 w-4 text-emerald-600">
+                <span class="text-sm font-medium text-emerald-700 dark:text-emerald-300">↓ ورودی</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-lg border-2 border-rose-200 bg-rose-50 dark:bg-rose-950/30 cursor-pointer">
+                <input type="radio" name="type" value="out" class="h-4 w-4 text-rose-600">
+                <span class="text-sm font-medium text-rose-700 dark:text-rose-300">↑ خروجی</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">تعداد *</label>
+            <input type="number" name="quantity" required min="1" value="1" class="form-input">
+          </div>
+
+          <div>
+            <label class="form-label">واحد</label>
+            <input type="text" name="unit" value="عدد" class="form-input" id="unit-input">
+          </div>
+
+          <div>
+            <label class="form-label">اپراتور *</label>
+            <input type="text" name="operator" required class="form-input" placeholder="نام شما">
+          </div>
+
+          <div>
+            <label class="form-label">مرجع</label>
+            <input type="text" name="reference" class="form-input" placeholder="مثلاً: فاکتور خرید ۱۲۳۴ یا سفارش O0001">
+          </div>
+
+          <div>
+            <label class="form-label">دلیل</label>
+            <select name="reason" class="form-select">
+              {% for value, label in reasons %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="form-label">یادداشت</label>
+            <textarea name="notes" rows="3" class="form-textarea" placeholder="توضیحات تکمیلی..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="flex gap-3 mt-6 pt-4 border-t border-slate-100">
+          <button type="submit" class="btn-gradient">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            ثبت تراکنش
+          </button>
+          <a href="{% url 'warehouse' %}" class="btn-outline">انصراف</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
+    <div class="flex gap-3">
+      <svg class="h-5 w-5 text-amber-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div>
+        <p class="text-sm font-medium text-amber-800 dark:text-amber-200">نکته</p>
+        <p class="text-xs text-amber-700 dark:text-amber-300 mt-1">
+          با ثبت تراکنش، موجودی محصول به‌صورت خودکار به‌روزرسانی می‌شود:
+          برای ورودی به موجودی اضافه و برای خروجی از موجودی کسر می‌گردد.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Auto-fill unit and display current stock when product is selected
+document.querySelector('select[name="product"]').addEventListener('change', function() {
+  const option = this.options[this.selectedIndex];
+  const unit = option.getAttribute('data-unit');
+  const stock = option.getAttribute('data-stock');
+  const name = option.getAttribute('data-name');
+  const display = document.getElementById('current-stock-display');
+
+  if (unit) {
+    document.getElementById('unit-input').value = unit;
+  }
+  if (stock !== null && name) {
+    const stockNum = parseInt(stock) || 0;
+    const stockFa = new Intl.NumberFormat('fa-IR').format(stockNum);
+    const stockColor = stockNum === 0 ? 'text-rose-600' : stockNum < 10 ? 'text-amber-600' : 'text-emerald-600';
+    display.innerHTML = '<span class="' + stockColor + ' font-bold ltr-nums">' + stockFa + ' ' + unit + '</span> <span class="text-xs text-slate-400">(' + name + ')</span>';
+  } else {
+    display.innerHTML = '<span class="text-slate-400">ابتدا محصول را انتخاب کنید</span>';
+  }
+});
+
+// Show warning if OUT quantity exceeds stock
+document.querySelector('input[name="quantity"]').addEventListener('input', function() {
+  const productSelect = document.querySelector('select[name="product"]');
+  const option = productSelect.options[productSelect.selectedIndex];
+  const stock = parseInt(option.getAttribute('data-stock')) || 0;
+  const qty = parseInt(this.value) || 0;
+  const outRadio = document.querySelector('input[value="out"]');
+
+  if (outRadio && outRadio.checked && qty > stock) {
+    this.style.borderColor = '#dc2626';
+    this.style.backgroundColor = '#fef2f2';
+  } else {
+    this.style.borderColor = '';
+    this.style.backgroundColor = '';
+  }
+});
+</script>
+{% endblock %}

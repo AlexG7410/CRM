@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}فرم درخواست محصول | APP CRM متخصص{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+        {% include "partials/icon.html" with icon="clipboard" %}
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold text-slate-800">فرم درخواست محصول</h1>
+        <p class="text-sm text-slate-500 mt-0.5">درخواست محصول از مشتری و ارسال به مسئول مالی/انبار/تدارکات</p>
+      </div>
+    </div>
+    <a href="{% url 'product_request_add' %}" class="btn-gradient">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      درخواست جدید
+    </a>
+  </div>
+
+  <!-- Workflow explanation -->
+  <div class="bg-gradient-to-l from-teal-50 to-emerald-50 dark:from-teal-950/30 dark:to-emerald-950/30 rounded-xl p-4 border border-teal-200 dark:border-teal-800">
+    <p class="text-sm font-medium text-teal-800 dark:text-teal-200 mb-2">گردش کار درخواست محصول:</p>
+    <div class="flex flex-wrap items-center gap-2 text-xs">
+      <span class="badge badge-warning">در انتظار</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="badge badge-info">ارسال به مسئول مالی</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="badge badge-teal">انبار</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="badge badge-info">تدارکات</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="badge badge-warning">در دست اقدام</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="badge badge-success">تکمیل شده</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">لیست درخواست‌ها</h2>
+    </div>
+    <div class="p-5 space-y-3">
+      {% for r in requests %}
+      <div class="rounded-xl border border-slate-200 p-4 hover:shadow-md transition-shadow">
+        <div class="flex items-start justify-between gap-3 mb-2">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-emerald-600 text-white">
+              {% include "partials/icon.html" with icon="package" %}
+            </div>
+            <div>
+              <h3 class="text-sm font-bold">{{ r.product_name }}</h3>
+              <p class="text-xs text-slate-500 ltr-nums">{{ r.quantity|fa_number }} {{ r.unit }} • {{ r.customer.name }}</p>
+            </div>
+          </div>
+          <div class="flex flex-col items-end gap-1">
+            {% if r.status == 'pending' %}<span class="badge badge-warning">در انتظار</span>
+            {% elif r.status == 'sent_to_finance' %}<span class="badge badge-info">ارسال به مسئول مالی</span>
+            {% elif r.status == 'pre_invoice_issued' %}<span class="badge badge-teal">صدور پیش فاکتور</span>
+            {% elif r.status == 'in_warehouse' %}<span class="badge badge-teal">در انبار</span>
+            {% elif r.status == 'sent_to_procurement' %}<span class="badge badge-info">ارسال به تدارکات</span>
+            {% elif r.status == 'in_progress' %}<span class="badge badge-warning">در دست اقدام</span>
+            {% elif r.status == 'completed' %}<span class="badge badge-success">تکمیل شده</span>
+            {% else %}<span class="badge badge-danger">لغو شده</span>{% endif %}
+            <span class="text-[10px] text-slate-400 ltr-nums">{{ r.created_at|date:"Y/m/d"|persian_digits }}</span>
+          </div>
+        </div>
+        {% if r.notes %}
+        <p class="text-xs text-slate-500 bg-slate-50 rounded-lg p-2.5">{{ r.notes }}</p>
+        {% endif %}
+        <div class="flex flex-wrap gap-2 mt-3 pt-2 border-t border-slate-100">
+          {% if r.status == 'pending' %}
+          <a href="{% url 'product_request_send_to_finance' r.id %}" class="btn-gradient text-xs px-3 py-1.5">ارسال به مسئول مالی</a>
+          {% endif %}
+          {% if r.status == 'sent_to_finance' or r.status == 'pre_invoice_issued' %}
+          <a href="{% url 'product_request_send_to_warehouse' r.id %}" class="btn-outline text-xs px-3 py-1.5">ارسال به انبار</a>
+          {% endif %}
+          {% if r.status == 'in_warehouse' %}
+          <a href="{% url 'product_request_send_to_procurement' r.id %}" class="btn-outline text-xs px-3 py-1.5">ارسال به تدارکات</a>
+          {% endif %}
+          {% if r.status == 'sent_to_procurement' %}
+          <a href="{% url 'product_request_mark_in_progress' r.id %}" class="btn-outline text-xs px-3 py-1.5">در دست اقدام</a>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div class="text-center py-12 text-slate-400">
+        <p>هنوز درخواستی ثبت نشده است</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

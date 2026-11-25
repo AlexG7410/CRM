@@ -1,0 +1,89 @@
+{% extends "panel/panel_base.html" %}
+{% load crm_tags %}
+
+{% block title %}فاکتورها و پرداخت‌ها | پنل مشتری{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+  <div class="flex items-center gap-3">
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">فاکتورها و پرداخت‌ها</h1>
+      <p class="text-sm text-slate-500 mt-0.5">سابقه فاکتورها و وضعیت پرداخت</p>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="grid grid-cols-2 gap-4">
+    <div class="card p-5">
+      <p class="text-xs text-slate-500">مجموع پرداخت‌شده</p>
+      <p class="text-xl font-bold text-emerald-600 ltr-nums mt-1">{{ total_paid|fa_number }} <span class="text-xs font-normal text-slate-400">تومان</span></p>
+    </div>
+    <div class="card p-5">
+      <p class="text-xs text-slate-500">مانده قابل پرداخت</p>
+      <p class="text-xl font-bold text-rose-600 ltr-nums mt-1">{{ total_due|fa_number }} <span class="text-xs font-normal text-slate-400">تومان</span></p>
+    </div>
+  </div>
+
+  <!-- Invoices -->
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">فاکتورها ({{ invoices|length|fa_number }} مورد)</h2>
+    </div>
+    <div class="p-5 space-y-4">
+      {% if invoices %}
+        {% for inv in invoices %}
+        <div class="border border-slate-200 rounded-xl p-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-sm font-bold">{{ inv.number }}</span>
+                {% if inv.type == 'pre_invoice' %}<span class="badge badge-neutral text-[10px]">پیش فاکتور</span>{% else %}<span class="badge badge-info text-[10px]">فاکتور</span>{% endif %}
+                {% if inv.status == 'paid' %}<span class="badge badge-success text-[10px]">پرداخت شده</span>
+                {% elif inv.status == 'overdue' %}<span class="badge badge-error text-[10px]">سررسید گذشته</span>
+                {% elif inv.status == 'issued' %}<span class="badge badge-warning text-[10px]">صدور شده</span>
+                {% else %}<span class="badge badge-neutral text-[10px]">{{ inv.get_status_display }}</span>{% endif %}
+              </div>
+              <p class="text-xs text-slate-500 mt-1 ltr-nums">
+                {% if inv.issue_date %}صدور: {{ inv.issue_date|persian_digits }}{% endif %}
+                {% if inv.due_date %} • سررسید: {{ inv.due_date|persian_digits }}{% endif %}
+              </p>
+              <p class="text-[11px] text-slate-400 mt-0.5">سفارش {{ inv.order.number }}</p>
+            </div>
+            <div class="text-left">
+              <p class="text-xs text-slate-500">مبلغ نهایی</p>
+              <p class="text-lg font-bold text-slate-800 ltr-nums">{{ inv.total|fa_number }} <span class="text-[10px] font-normal text-slate-400">تومان</span></p>
+            </div>
+          </div>
+
+          {% if inv.payments_list %}
+          <div class="mt-3 pt-3 border-t border-slate-100">
+            <p class="text-xs text-slate-500 mb-2">پرداخت‌های این فاکتور:</p>
+            <div class="space-y-1">
+              {% for p in inv.payments_list %}
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-slate-600">{{ p.get_method_display }} • {{ p.created_at|date:"Y/m/d"|persian_digits }}</span>
+                <span class="ltr-nums font-medium">{{ p.amount|fa_number }} تومان</span>
+                <span>
+                  {% if p.status == 'confirmed' %}<span class="badge badge-success text-[10px]">تأیید شد</span>
+                  {% elif p.status == 'pending' %}<span class="badge badge-warning text-[10px]">در انتظار</span>
+                  {% else %}<span class="badge badge-neutral text-[10px]">{{ p.get_status_display }}</span>{% endif %}
+                </span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% else %}
+      <div class="text-center py-10 text-slate-400">
+        <p>هنوز فاکتوری برای شما صادر نشده است.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

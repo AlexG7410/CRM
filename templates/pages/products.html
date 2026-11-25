@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}محصولات | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md shadow-teal-500/20">
+        {% include "partials/icon.html" with icon="package" %}
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold text-slate-800">محصولات</h1>
+        <p class="text-sm text-slate-500 mt-0.5">مدیریت کاتالوگ محصولات به تفکیک برند</p>
+      </div>
+    </div>
+    <a href="{% url 'product_add' %}" class="btn-gradient">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      افزودن محصول
+    </a>
+  </div>
+
+  <!-- Brand filter pills -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-2">
+    <a href="{% url 'products' %}" class="filter-pill {% if not selected_brand %}active{% endif %}">
+      همه برندها ({{ products|length }})
+    </a>
+    {% for b in brands %}
+    <a href="{% url 'products' %}?brand={{ b.id }}" class="filter-pill {% if selected_brand == b.id|stringformat:'s' %}active{% endif %}">
+      <span class="text-base">{{ b.logo_emoji }}</span>
+      {{ b.name }}
+      <span class="text-xs {% if selected_brand == b.id|stringformat:'s' %}text-white/80{% else %}text-slate-400{% endif %}">
+        ({{ b.product_count|fa_number }})
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Search -->
+  <div class="relative max-w-md">
+    <svg class="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <form method="get" action="{% url 'products' %}">
+      {% if selected_brand %}<input type="hidden" name="brand" value="{{ selected_brand }}">{% endif %}
+      <input type="text" name="q" value="{{ search }}" placeholder="جستجوی محصول..." class="form-input pr-10">
+    </form>
+  </div>
+
+  <!-- Products grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    {% for p in products %}
+    <div class="product-card group">
+      <div class="relative h-36 bg-gradient-to-br from-teal-50 to-emerald-50 flex items-center justify-center overflow-hidden">
+        {% if p.image %}
+          <img src="{{ p.image.url }}" alt="{{ p.name }}" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-300">
+        {% elif p.image_url %}
+          <img src="{{ p.image_url }}" alt="{{ p.name }}" class="h-full w-full object-cover group-hover:scale-110 transition-transform duration-300" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="text-6xl group-hover:scale-110 transition-transform duration-300" style="display:none;">{{ p.image_emoji }}</div>
+        {% else %}
+          <div class="text-6xl group-hover:scale-110 transition-transform duration-300">{{ p.image_emoji }}</div>
+        {% endif %}
+        <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-white/90 text-[10px] font-medium text-teal-700 backdrop-blur-sm">
+          {{ p.brand.name }}
+        </span>
+        {% if p.is_low_stock %}
+        <span class="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-rose-500/90 text-white text-[10px] font-medium flex items-center gap-1">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          موجودی کم
+        </span>
+        {% endif %}
+      </div>
+
+      <div class="p-4">
+        <p class="text-[11px] text-slate-500 mb-1">{{ p.get_category_display }}</p>
+        <h3 class="text-sm font-bold leading-snug mb-2 min-h-[2.5rem]">{{ p.name }}</h3>
+        <p class="text-xs text-slate-500 line-clamp-2 mb-3 min-h-[2rem]">{{ p.description }}</p>
+
+        <div class="flex items-end justify-between pt-2 border-t border-slate-100">
+          <div>
+            <p class="text-[10px] text-slate-500">قیمت</p>
+            <p class="text-base font-bold text-teal-700 ltr-nums">{{ p.price|fa_number }} <span class="text-[10px] text-slate-500 font-normal">ت / {{ p.unit }}</span></p>
+          </div>
+          <div class="text-left">
+            <p class="text-[10px] text-slate-500">موجودی</p>
+            <p class="text-sm font-bold ltr-nums {% if p.is_low_stock %}text-rose-600{% else %}text-emerald-600{% endif %}">
+              {{ p.stock|fa_number }} {{ p.unit }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-2 mt-3">
+          <button type="button"
+                  onclick="addToCartFromProducts(event, {{ p.id }}, '{{ p.name|escapejs }}', {{ p.price }}, '{{ p.image_emoji }}')"
+                  class="flex-1 btn-gradient justify-center text-center">
+            افزودن به سفارش
+          </button>
+          <a href="{% url 'product_edit' p.id %}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400" title="ویرایش محصول" aria-label="ویرایش">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
+          </a>
+          <a href="{% url 'inventory' %}#product-{{ p.id }}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400" title="مشاهده در انبار" aria-label="مشاهده">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="empty-state col-span-full">
+      {% include "partials/icon.html" with icon="package" %}
+      <p>محصولی یافت نشد</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Floating cart badge -->
+  <div id="cart-floating-badge" class="fixed bottom-6 left-6 z-50 hidden">
+    <a href="{% url 'customer_order' %}" class="flex items-center gap-2 px-4 py-3 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white shadow-lg shadow-teal-500/30 hover:scale-105 transition-transform">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+      <span class="text-sm font-medium">سبد سفارش</span>
+      <span id="cart-badge-count" class="flex h-6 min-w-6 px-1.5 items-center justify-center rounded-full bg-white text-teal-700 text-xs font-bold ltr-nums">۰</span>
+    </a>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  Cart functions for products page (uses localStorage)
+// ============================================================
+const CART_KEY = "woundcare_cart";
+
+function getCart() {
+  try {
+    return JSON.parse(localStorage.getItem(CART_KEY) || "{}");
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveCart(cart) {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  updateCartBadge();
+}
+
+function formatFa(num) {
+  return new Intl.NumberFormat("fa-IR").format(num);
+}
+
+function addToCartFromProducts(event, productId, name, price, emoji) {
+  var cart = getCart();
+  cart[productId] = (cart[productId] || 0) + 1;
+  saveCart(cart);
+
+  // Show toast notification
+  showToast(emoji + " " + name + " به سبد سفارش اضافه شد");
+
+  // Button feedback animation
+  if (event && event.target) {
+    event.target.classList.add("scale-95");
+    setTimeout(function() {
+      event.target.classList.remove("scale-95");
+    }, 150);
+  }
+}
+
+function showToast(message) {
+  // Remove any existing toast
+  var existing = document.getElementById("cart-toast");
+  if (existing) existing.remove();
+
+  var toast = document.createElement("div");
+  toast.id = "cart-toast";
+  toast.className = "fixed top-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg shadow-teal-500/30 text-sm font-medium animate-slide-up";
+  toast.style.transition = "opacity 0.4s, transform 0.4s";
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  // Auto-remove after 2 seconds
+  setTimeout(function() {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(-50%) translateY(-10px)";
+    setTimeout(function() { toast.remove(); }, 400);
+  }, 2000);
+}
+
+function updateCartBadge() {
+  var cart = getCart();
+  var totalItems = 0;
+  Object.values(cart).forEach(function(qty) { totalItems += qty; });
+
+  var badge = document.getElementById("cart-floating-badge");
+  var countEl = document.getElementById("cart-badge-count");
+
+  if (totalItems > 0) {
+    if (badge) badge.classList.remove("hidden");
+    if (countEl) countEl.textContent = formatFa(totalItems);
+  } else {
+    if (badge) badge.classList.add("hidden");
+  }
+}
+
+// Update badge on page load
+document.addEventListener("DOMContentLoaded", updateCartBadge);
+</script>
+{% endblock %}

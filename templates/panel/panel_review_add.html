@@ -1,0 +1,105 @@
+{% extends "panel/panel_base.html" %}
+{% load crm_tags %}
+
+{% block title %}ثبت رضایت‌مندی | پنل مشتری{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up max-w-2xl mx-auto">
+  <div class="flex items-center gap-3">
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">ثبت رضایت‌مندی</h1>
+      <p class="text-sm text-slate-500 mt-0.5">نظر شما درباره کیفیت محصولات و خدمات ما</p>
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'error' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">فرم رضایت‌سنجی</h2>
+    </div>
+    <div class="p-5">
+      <form method="post" action="{% url 'panel_review_add' %}">
+        {% csrf_token %}
+        <div class="space-y-5">
+
+          <!-- Overall rating -->
+          <div>
+            <label class="form-label">امتیاز کلی</label>
+            <div class="flex gap-2" id="rating-stars">
+              {% for i in "12345" %}
+              <label class="cursor-pointer">
+                <input type="radio" name="rating" value="{{ i }}" class="hidden rating-radio" {% if forloop.last %}checked{% endif %}>
+                <svg class="star-icon w-8 h-8" data-val="{{ i }}" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </label>
+              {% endfor %}
+            </div>
+            <input type="hidden" name="rating" id="rating-input" value="5">
+          </div>
+
+          <!-- Sub-ratings -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="form-label">کیفیت محصولات (۱-۵)</label>
+              <input type="number" name="product_quality" min="1" max="5" value="5" class="form-input">
+            </div>
+            <div>
+              <label class="form-label">کیفیت خدمات (۱-۵)</label>
+              <input type="number" name="service_quality" min="1" max="5" value="5" class="form-input">
+            </div>
+            <div>
+              <label class="form-label">سرعت تحویل (۱-۵)</label>
+              <input type="number" name="delivery_speed" min="1" max="5" value="5" class="form-input">
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">نظر شما (اختیاری)</label>
+            <textarea name="comment" rows="4" class="form-textarea" placeholder="تجربه خود را با ما در میان بگذارید..."></textarea>
+          </div>
+
+          <div class="flex gap-3 pt-4 border-t border-slate-100">
+            <button type="submit" class="btn-gradient">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              ثبت نظر
+            </button>
+            <a href="{% url 'panel_dashboard' %}" class="btn-outline">انصراف</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function(){
+  var stars = document.querySelectorAll('#rating-stars .star-icon');
+  var input = document.getElementById('rating-input');
+  function paint(n){
+    stars.forEach(function(s){
+      var v = parseInt(s.getAttribute('data-val'));
+      s.classList.toggle('text-amber-400', v <= n);
+      s.classList.toggle('text-slate-300', v > n);
+    });
+  }
+  stars.forEach(function(s){
+    var label = s.closest('label');
+    label.addEventListener('click', function(){
+      var v = parseInt(s.getAttribute('data-val'));
+      input.value = v;
+      paint(v);
+    });
+  });
+  paint(5);
+})();
+</script>
+{% endblock %}

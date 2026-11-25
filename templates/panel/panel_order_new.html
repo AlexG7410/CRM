@@ -1,0 +1,207 @@
+{% extends "panel/panel_base.html" %}
+{% load crm_tags %}
+
+{% block title %}ثبت سفارش جدید | پنل مشتری{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+
+  <div class="flex items-center gap-3">
+    <a href="{% url 'panel_orders' %}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">ثبت سفارش جدید</h1>
+      <p class="text-sm text-slate-500 mt-0.5">محصولات را انتخاب و تعداد وارد کنید، سپس سفارش ثبت کنید</p>
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'error' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    <!-- Product picker -->
+    <div class="lg:col-span-2">
+      <div class="card">
+        <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50 flex items-center justify-between gap-3">
+          <h2 class="text-base font-semibold text-slate-800">انتخاب محصولات</h2>
+          <div class="relative">
+            <svg class="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="product-search" class="form-input pr-10 text-sm w-44" placeholder="جستجوی محصول..." oninput="filterProducts()">
+          </div>
+        </div>
+        <div class="p-5">
+          <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {% for p in products %}
+            <button type="button" data-pid="{{ p.id }}" data-name="{{ p.name|escapejs }}" data-price="{{ p.price }}" data-emoji="{{ p.image_emoji }}"
+                    class="prod-btn flex items-center gap-3 p-3 rounded-xl border-2 border-slate-200 text-right transition-all hover:border-teal-300">
+              <span class="text-3xl">{{ p.image_emoji }}</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium truncate">{{ p.name }}</p>
+                <p class="text-xs text-slate-500">{{ p.brand.name }}</p>
+                <p class="text-xs font-bold text-teal-700 ltr-nums mt-0.5">{{ p.price|fa_number }} ت</p>
+              </div>
+              <span data-badge class="hidden h-7 w-7 rounded-full bg-teal-500 text-white text-xs font-bold items-center justify-center">۰</span>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart -->
+    <div>
+      <form method="post" action="{% url 'panel_order_new' %}" id="order-form">
+        {% csrf_token %}
+        <div class="card">
+          <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+            <h2 class="text-base font-semibold text-slate-800">سبد سفارش</h2>
+          </div>
+          <div class="p-5">
+            <div>
+              <label class="form-label">یادداشت سفارش (اختیاری)</label>
+              <textarea name="notes" rows="2" class="form-textarea" placeholder="توضیحات برای این سفارش..."></textarea>
+            </div>
+
+            <div id="cart-items" class="mt-4 space-y-2 max-h-64 overflow-y-auto">
+              <p class="text-center text-sm text-slate-400 py-6" id="cart-empty">سبد خالی است — روی محصول کلیک کنید تا اضافه شود</p>
+            </div>
+            <div id="cart-hidden"></div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 space-y-2">
+              <div class="flex justify-between text-sm"><span class="text-slate-500">جمع اقلام:</span><span id="subtotal" class="font-bold ltr-nums">۰ ت</span></div>
+              <div class="flex justify-between text-sm"><span class="text-slate-500">مالیات (۱۰٪):</span><span id="tax" class="ltr-nums">۰ ت</span></div>
+              <div class="flex justify-between text-base font-bold pt-2 border-t border-slate-100"><span>مبلغ نهایی:</span><span id="total" class="text-teal-700 ltr-nums">۰ ت</span></div>
+            </div>
+
+            <button type="submit" id="submit-btn" class="w-full mt-4 btn-gradient justify-center" disabled>
+              ثبت سفارش
+            </button>
+            <button type="button" onclick="clearCart()" class="w-full mt-2 py-2 rounded-xl text-xs text-rose-600 hover:bg-rose-50 transition-colors">
+              🗑️ پاک کردن سبد
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function(){
+  var cart = {};  // {pid: qty}
+
+  function fa(n){
+    return String(n).replace(/\d/g, function(d){return '۰۱۲۳۴۵۶۷۸۹'[d];});
+  }
+  function fmt(n){ return fa(n.toLocaleString('en-US')); }
+
+  function render(){
+    var keys = Object.keys(cart);
+    var pids = keys.filter(function(k){return cart[k] > 0;});
+    var box = document.getElementById('cart-items');
+    var empty = document.getElementById('cart-empty');
+    var hidden = document.getElementById('cart-hidden');
+    var subtotal = 0;
+
+    // Clear hidden inputs
+    hidden.innerHTML = '';
+
+    if (pids.length === 0) {
+      box.innerHTML = '<p class="text-center text-sm text-slate-400 py-6" id="cart-empty">سبد خالی است — روی محصول کلیک کنید تا اضافه شود</p>';
+      document.getElementById('subtotal').textContent = '۰ ت';
+      document.getElementById('tax').textContent = '۰ ت';
+      document.getElementById('total').textContent = '۰ ت';
+      document.getElementById('submit-btn').disabled = true;
+    } else {
+      var html = '';
+      pids.forEach(function(pid){
+        var btn = document.querySelector('.prod-btn[data-pid="'+pid+'"]');
+        if (!btn) return;
+        var name = btn.getAttribute('data-name');
+        var price = parseInt(btn.getAttribute('data-price'));
+        var emoji = btn.getAttribute('data-emoji');
+        var qty = cart[pid];
+        var lineTotal = price * qty;
+        subtotal += lineTotal;
+        html += '<div class="flex items-center gap-2 p-2 rounded-lg bg-slate-50">';
+        html += '<span class="text-lg">'+emoji+'</span>';
+        html += '<div class="flex-1 min-w-0"><p class="text-xs font-medium truncate">'+name+'</p>';
+        html += '<p class="text-[11px] text-slate-500 ltr-nums">'+fmt(price)+' × '+fa(qty)+' = '+fmt(lineTotal)+'</p></div>';
+        html += '<div class="flex items-center gap-1">';
+        html += '<button type="button" onclick="changeQty('+pid+', -1)" class="h-6 w-6 rounded bg-slate-200 text-slate-700 text-xs font-bold">−</button>';
+        html += '<span class="w-5 text-center text-xs font-bold">'+fa(qty)+'</span>';
+        html += '<button type="button" onclick="changeQty('+pid+', 1)" class="h-6 w-6 rounded bg-teal-500 text-white text-xs font-bold">+</button>';
+        html += '</div></div>';
+        // hidden inputs for submission
+        hidden.innerHTML += '<input type="hidden" name="products" value="'+pid+'">';
+        hidden.innerHTML += '<input type="hidden" name="quantities" value="'+qty+'">';
+      });
+      box.innerHTML = html;
+      var tax = Math.floor(subtotal * 0.1);
+      var total = subtotal + tax;
+      document.getElementById('subtotal').textContent = fmt(subtotal) + ' ت';
+      document.getElementById('tax').textContent = fmt(tax) + ' ت';
+      document.getElementById('total').textContent = fmt(total) + ' ت';
+      document.getElementById('submit-btn').disabled = false;
+    }
+
+    // Update badges on product buttons
+    document.querySelectorAll('.prod-btn').forEach(function(btn){
+      var pid = btn.getAttribute('data-pid');
+      var badge = btn.querySelector('[data-badge]');
+      if (cart[pid] && cart[pid] > 0) {
+        badge.textContent = fa(cart[pid]);
+        badge.classList.remove('hidden');
+        badge.classList.add('flex');
+        btn.classList.add('border-teal-400','bg-teal-50/40');
+      } else {
+        badge.classList.add('hidden');
+        badge.classList.remove('flex');
+        btn.classList.remove('border-teal-400','bg-teal-50/40');
+      }
+    });
+  }
+
+  window.changeQty = function(pid, delta){
+    if (!cart[pid]) cart[pid] = 0;
+    cart[pid] = Math.max(0, cart[pid] + delta);
+    if (cart[pid] === 0) delete cart[pid];
+    render();
+  };
+
+  window.clearCart = function(){
+    if (confirm('سبد خالی شود؟')) { cart = {}; render(); }
+  };
+
+  // Click product to add
+  document.querySelectorAll('.prod-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pid = btn.getAttribute('data-pid');
+      cart[pid] = (cart[pid] || 0) + 1;
+      render();
+    });
+  });
+
+  window.filterProducts = function(){
+    var q = document.getElementById('product-search').value.toLowerCase().trim();
+    document.querySelectorAll('.prod-btn').forEach(function(btn){
+      var name = (btn.getAttribute('data-name') || '').toLowerCase();
+      btn.style.display = name.indexOf(q) !== -1 ? '' : 'none';
+    });
+  };
+
+  render();
+})();
+</script>
+{% endblock %}

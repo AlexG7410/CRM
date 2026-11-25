@@ -1,0 +1,106 @@
+{% extends "panel/panel_base.html" %}
+{% load crm_tags %}
+
+{% block title %}سفارش {{ order.number }} | پنل مشتری{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up max-w-3xl mx-auto">
+
+  <div class="flex items-center gap-3">
+    <a href="{% url 'panel_orders' %}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">{{ order.number }}</h1>
+      <p class="text-sm text-slate-500 mt-0.5 ltr-nums">تاریخ: {{ order.created_at|date:"Y/m/d H:i"|persian_digits }}</p>
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'error' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- Status banner -->
+  <div class="card p-5">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <p class="text-xs text-slate-500 mb-1">وضعیت سفارش</p>
+        {% if order.status == 'pending' %}<span class="badge badge-warning text-sm">در انتظار بررسی</span>
+        {% elif order.status == 'shipped' %}<span class="badge badge-info text-sm">ارسال شده — در راه</span>
+        {% elif order.status == 'delivered' %}<span class="badge badge-teal text-sm">تحویل داده شده — منتظر تأیید شما</span>
+        {% elif order.status == 'confirmed_received' %}<span class="badge badge-success text-sm">تأیید دریافت شد</span>
+        {% else %}<span class="badge badge-neutral text-sm">{{ order.get_status_display }}</span>{% endif %}
+      </div>
+      <div class="text-left">
+        <p class="text-xs text-slate-500">مبلغ کل</p>
+        <p class="text-xl font-bold text-slate-800 ltr-nums">{{ order.total|fa_number }} <span class="text-xs font-normal text-slate-400">تومان</span></p>
+      </div>
+    </div>
+    {% if order.notes %}
+    <div class="mt-4 pt-4 border-t border-slate-100">
+      <p class="text-xs text-slate-500 mb-1">یادداشت شما</p>
+      <p class="text-sm text-slate-700">{{ order.notes }}</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Items -->
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">اقلام سفارش ({{ items|length|fa_number }} قلم)</h2>
+    </div>
+    <div class="p-5 overflow-x-auto">
+      <table class="data-table w-full">
+        <thead>
+          <tr><th>محصول</th><th>قیمت واحد</th><th>تعداد</th><th>مبلغ</th></tr>
+        </thead>
+        <tbody>
+          {% for it in items %}
+          <tr>
+            <td class="font-medium">
+              <span class="text-lg ml-1">{{ it.product.image_emoji }}</span>
+              {{ it.product.name }}
+              <p class="text-[11px] text-slate-400">{{ it.product.brand.name }}</p>
+            </td>
+            <td class="ltr-nums">{{ it.unit_price|fa_number }}</td>
+            <td class="ltr-nums">{{ it.quantity|fa_number }} {{ it.product.unit }}</td>
+            <td class="ltr-nums font-bold">{{ it.subtotal|fa_number }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr class="border-t-2 border-slate-200">
+            <td colspan="3" class="text-left font-medium text-slate-600">جمع کل اقلام</td>
+            <td class="ltr-nums font-bold text-slate-800">{{ order.subtotal|fa_number }}</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="text-left text-sm text-slate-500">مالیات (۱۰٪)</td>
+            <td class="ltr-nums text-sm text-slate-600">{{ order.tax|fa_number }}</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="text-left font-bold text-slate-700">مبلغ نهایی</td>
+            <td class="ltr-nums font-bold text-teal-700 text-lg">{{ order.total|fa_number }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  {% if order.commission_amount %}
+  <div class="card p-5 bg-teal-50/40">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-100 text-teal-700">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+      </div>
+      <div>
+        <p class="text-xs text-slate-500">پورسانت این سفارش ({{ order.customer.commission_rate }}٪)</p>
+        <p class="text-lg font-bold text-teal-700 ltr-nums">{{ order.commission_amount|fa_number }} تومان</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

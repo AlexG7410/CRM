@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}ثبت سفارش | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md shadow-teal-500/20">
+        {% include "partials/icon.html" with icon="cart" %}
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold text-slate-800">ثبت سفارش مشتری</h1>
+        <p class="text-sm text-slate-500 mt-0.5">ثبت سفارش جدید با انتخاب محصول و مشتری</p>
+      </div>
+    </div>
+    <a href="{% url 'customer_add' %}" class="btn-outline text-sm" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      افزودن مشتری جدید
+    </a>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'success' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    <!-- Product picker -->
+    <div class="lg:col-span-2 space-y-4">
+      <div class="card">
+        <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50 flex items-center justify-between">
+          <h2 class="text-base font-semibold text-slate-800">انتخاب محصولات</h2>
+          <div class="relative">
+            <svg class="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="product-search" class="form-input pr-10 text-sm w-48" placeholder="جستجوی محصول..." oninput="filterProducts()">
+          </div>
+        </div>
+        <div class="p-5">
+          <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {% for p in products %}
+            <button type="button" data-add-product="{{ p.id }}" data-search-name="{{ p.name }}"
+                    class="flex items-center gap-3 p-3 rounded-xl border-2 border-slate-200 text-right transition-all hover:border-teal-300">
+              <span class="text-3xl">{{ p.image_emoji }}</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium truncate">{{ p.name }}</p>
+                <p class="text-xs text-slate-500">{{ p.brand.name }}</p>
+                <p class="text-xs font-bold text-teal-700 ltr-nums mt-0.5">{{ p.price|fa_number }} ت</p>
+              </div>
+              <span data-qty-badge class="hidden h-7 w-7 rounded-full bg-teal-500 text-white text-xs font-bold flex items-center justify-center">۰</span>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order summary -->
+    <div class="space-y-4">
+      <form method="post" action="{% url 'customer_order' %}">
+        {% csrf_token %}
+        <div class="card">
+          <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+            <h2 class="text-base font-semibold text-slate-800">اطلاعات سفارش</h2>
+          </div>
+          <div class="p-5 space-y-3">
+            <div>
+              <label class="form-label">مشتری</label>
+              <select name="customer" class="form-select">
+                {% for c in customers %}
+                <option value="{{ c.id }}">{{ c.name }} - {{ c.city }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label class="form-label">توضیحات</label>
+              <textarea name="notes" rows="3" placeholder="یادداشت برای این سفارش..." class="form-textarea"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+            <h2 class="text-base font-semibold text-slate-800">خلاصه سفارش</h2>
+          </div>
+          <div class="p-5">
+            <div id="cart-items" class="space-y-2 max-h-60 overflow-y-auto scrollbar-thin">
+              <p class="text-center text-sm text-slate-400 py-6">هنوز محصولی انتخاب نشده</p>
+            </div>
+
+            <div id="cart-hidden"></div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-slate-500">جمع کل:</span>
+                <span id="subtotal" class="font-bold ltr-nums">۰ ت</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-slate-500">مالیات (۱۰٪):</span>
+                <span id="tax" class="ltr-nums">۰ ت</span>
+              </div>
+              <div class="flex justify-between text-base font-bold pt-2 border-t border-slate-100">
+                <span>مبلغ نهایی:</span>
+                <span id="total" class="text-teal-700 ltr-nums">۰ ت</span>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full mt-4 btn-gradient justify-center">
+              ثبت سفارش
+            </button>
+            <button type="button" onclick="clearCartFromTemplate()" class="w-full mt-2 py-2 rounded-xl text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
+              🗑️ پاک کردن سبد خرید
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Pass products data to JS
+  window.__PRODUCTS__ = [
+    {% for p in products %}
+    {
+      id: {{ p.id }},
+      name: "{{ p.name|escapejs }}",
+      price: {{ p.price }},
+      image_emoji: "{{ p.image_emoji }}",
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ];
+
+  // Pre-select product from URL (legacy support — still works if URL has ?product_id=X)
+  // This merges with the existing cart stored in localStorage (does not reset it)
+  var preselectId = "{{ preselect_product_id }}";
+  if (preselectId) {
+    document.addEventListener("DOMContentLoaded", function() {
+      setTimeout(function() {
+        // Read current cart from localStorage
+        var cart = {};
+        try {
+          var saved = localStorage.getItem("woundcare_cart");
+          if (saved) cart = JSON.parse(saved);
+        } catch (e) { cart = {}; }
+
+        // Only add if not already in cart (avoid double-adding from URL)
+        if (!cart[preselectId]) {
+          cart[preselectId] = 1;
+          localStorage.setItem("woundcare_cart", JSON.stringify(cart));
+        }
+
+        // Redirect to clean URL so refresh doesn't re-add
+        var cleanUrl = window.location.pathname;
+        window.location.href = cleanUrl;
+      }, 50);
+    });
+  }
+
+  // Filter products by search text
+  function filterProducts() {
+    var query = document.getElementById('product-search').value.toLowerCase().trim();
+    var buttons = document.querySelectorAll('#product-list [data-add-product]');
+    buttons.forEach(function(btn) {
+      var name = btn.getAttribute('data-search-name') || '';
+      if (name.toLowerCase().includes(query)) {
+        btn.style.display = '';
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+  }
+
+  // Clear cart button handler - dispatches a custom event that main.js listens for
+  function clearCartFromTemplate() {
+    if (confirm("آیا از پاک کردن تمام محصولات سبد اطمینان دارید؟")) {
+      localStorage.removeItem("woundcare_cart");
+      // Reload to re-render the cart empty
+      window.location.reload();
+    }
+  }
+</script>
+{% endblock %}

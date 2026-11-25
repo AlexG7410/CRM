@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}پیگیری مالی | APP CRM متخصص{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      {% include "partials/icon.html" with icon="trending" %}
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">پیگیری مالی</h1>
+      <p class="text-sm text-slate-500 mt-0.5">پیگیری فاکتورها، پرداخت‌ها و مطالبات</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="stat-card bg-gradient-teal">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">کل فاکتورها</p>
+        <p class="text-2xl font-bold ltr-nums">{{ total_invoiced|fa_number }}&nbsp;</p>
+        <p class="text-[11px] text-white/70">تومان</p>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-emerald">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">پرداخت شده</p>
+        <p class="text-2xl font-bold ltr-nums">{{ total_paid|fa_number }}&nbsp;</p>
+        <p class="text-[11px] text-white/70">تومان</p>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-rose">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">مانده</p>
+        <p class="text-2xl font-bold ltr-nums">{{ total_outstanding|fa_number }}&nbsp;</p>
+        <p class="text-[11px] text-white/70">تومان</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">فاکتورهای اخیر</h2>
+    </div>
+    <div class="p-5 overflow-x-auto">
+      <table class="data-table w-full">
+        <thead>
+          <tr>
+            <th>شماره</th>
+            <th>مشتری</th>
+            <th>مبلغ کل</th>
+            <th>پرداخت شده</th>
+            <th>مانده</th>
+            <th>وضعیت</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in invoices %}
+          <tr>
+            <td class="font-mono text-xs">{{ i.number }}</td>
+            <td class="font-medium">{{ i.customer.name }}</td>
+            <td class="ltr-nums">{{ i.total|fa_number }}</td>
+            <td class="ltr-nums text-emerald-600">
+              {% if i.status == 'paid' %}{{ i.total|fa_number }}{% else %}۰{% endif %}
+            </td>
+            <td class="ltr-nums text-rose-600">
+              {% if i.status == 'paid' %}۰{% else %}{{ i.total|fa_number }}{% endif %}
+            </td>
+            <td>
+              {% if i.status == 'paid' %}<span class="badge badge-success">پرداخت شده</span>
+              {% elif i.status == 'overdue' %}<span class="badge badge-danger">سررسید گذشته</span>
+              {% elif i.status == 'approved' %}<span class="badge badge-info">تأیید شده</span>
+              {% else %}<span class="badge badge-warning">{{ i.get_status_display }}</span>{% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="text-center py-8 text-slate-400">فاکتوری ثبت نشده است</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">پرداخت‌های اخیر</h2>
+    </div>
+    <div class="p-5 space-y-2">
+      {% for p in recent_payments %}
+      <div class="flex items-center gap-3 p-3 rounded-lg bg-slate-50">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg
+                    {% if p.status == 'confirmed' %}bg-gradient-to-br from-emerald-500 to-emerald-700
+                    {% elif p.status == 'pending' %}bg-gradient-to-br from-amber-500 to-orange-600
+                    {% else %}bg-gradient-to-br from-rose-500 to-rose-700{% endif %} text-white shrink-0">
+          {% include "partials/icon.html" with icon="credit" %}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium">{{ p.customer.name }}</p>
+          <p class="text-xs text-slate-500 ltr-nums">{{ p.created_at|date:"Y/m/d"|persian_digits }} • {{ p.get_method_display }}</p>
+        </div>
+        <div class="text-left">
+          <p class="font-bold ltr-nums">{{ p.amount|fa_number }} ت</p>
+          {% if p.status == 'confirmed' %}<span class="badge badge-success">تأیید شد</span>
+          {% elif p.status == 'pending' %}<span class="badge badge-warning">در انتظار</span>
+          {% else %}<span class="badge badge-danger">ناموفق</span>{% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-center text-sm text-slate-400 py-6">پرداختی ثبت نشده</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

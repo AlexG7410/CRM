@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}افزودن مشتری | APP CRM متخصص{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up max-w-4xl mx-auto">
+
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{% url 'customers' %}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      {% include "partials/icon.html" with icon="users" %}
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">افزودن مشتری جدید</h1>
+      <p class="text-sm text-slate-500 mt-0.5">ثبت زخم‌کار، کلینیک، بیمارستان، داروخانه یا پزشک</p>
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'error' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">اطلاعات مشتری</h2>
+    </div>
+    <div class="p-5">
+      <form method="post" action="{% url 'customer_add' %}">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div class="md:col-span-2">
+            <label class="form-label">نام مشتری *</label>
+            <input type="text" name="name" required class="form-input" placeholder="مثلاً: کلینیک تخصصی زخم شفا">
+          </div>
+
+          <div>
+            <label class="form-label">نوع مشتری *</label>
+            <select name="type" class="form-select">
+              {% for value, label in customer_types %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">نام فرد قابل تماس</label>
+            <input type="text" name="contact_person" class="form-input" placeholder="مثلاً: دکتر احمدی">
+          </div>
+
+          <div>
+            <label class="form-label">شماره تماس *</label>
+            <input type="text" name="phone" required class="form-input" placeholder="021-xxxxxxxx">
+          </div>
+
+          <div>
+            <label class="form-label">ایمیل</label>
+            <input type="email" name="email" class="form-input" placeholder="email@example.com">
+          </div>
+
+          <div>
+            <label class="form-label">شهر</label>
+            <input type="text" name="city" class="form-input" placeholder="مثلاً: تهران">
+          </div>
+
+          <div>
+            <label class="form-label">محل کار فعلی</label>
+            <input type="text" name="workplace" class="form-input" placeholder="مثلاً: کلینیک زخم شفا">
+          </div>
+
+          <div>
+            <label class="form-label">درصد پورسانت</label>
+            <input type="number" name="commission_rate" value="20.00" step="0.01" min="0" max="100" class="form-input">
+            <p class="text-[11px] text-slate-400 mt-1">پیش‌فرض: ۲۰٪</p>
+          </div>
+
+          <div>
+            <label class="form-label">وضعیت</label>
+            <select name="status" class="form-select">
+              {% for value, label in customer_statuses %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="form-label">سابقه کاری</label>
+            <textarea name="work_history" rows="3" class="form-textarea" placeholder="سابقه کاری زخم‌کار..."></textarea>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="form-label">آدرس</label>
+            <textarea name="address" rows="2" class="form-textarea" placeholder="آدرس کامل..."></textarea>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="form-label">یادداشت</label>
+            <textarea name="notes" rows="3" class="form-textarea" placeholder="نکات مهم..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="flex gap-3 mt-6 pt-4 border-t border-slate-100">
+          <button type="submit" class="btn-gradient">
+            ذخیره مشتری
+          </button>
+          <a href="{% url 'customers' %}" class="btn-outline">انصراف</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

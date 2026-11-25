@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}ثبت پرداخت جدید | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up max-w-4xl mx-auto">
+
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{% url 'payments' %}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      {% include "partials/icon.html" with icon="credit" %}
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">ثبت پرداخت جدید</h1>
+      <p class="text-sm text-slate-500 mt-0.5">ثبت دریافت وجه از مشتری</p>
+    </div>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'error' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">اطلاعات پرداخت</h2>
+    </div>
+    <div class="p-5">
+      <form method="post" action="{% url 'payment_add' %}" id="payment-form">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div class="md:col-span-2">
+            <label class="form-label">فاکتور *</label>
+            <select name="invoice" required class="form-select" id="invoice-select">
+              <option value="">— انتخاب فاکتور —</option>
+              {% for inv in invoices %}
+              <option value="{{ inv.id }}" data-customer="{{ inv.customer.name }}" data-total="{{ inv.total }}" data-number="{{ inv.number }}">
+                {{ inv.number }} - {{ inv.customer.name }} (مبلغ: {{ inv.total|fa_number }} تومان)
+              </option>
+              {% endfor %}
+            </select>
+            <p class="text-[11px] text-slate-400 mt-1">فاکتورهایی که هنوز به‌طور کامل پرداخت نشده‌اند نمایش داده می‌شوند</p>
+          </div>
+
+          <div>
+            <label class="form-label">مبلغ پرداخت (تومان) *</label>
+            <input type="number" name="amount" id="amount-input" required min="1" class="form-input" placeholder="مثلاً: 1000000" oninput="updatePreview()">
+          </div>
+
+          <div>
+            <label class="form-label">روش پرداخت</label>
+            <select name="method" class="form-select">
+              {% for value, label in methods %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">وضعیت</label>
+            <select name="status" class="form-select">
+              {% for value, label in statuses %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">کد تراکنش</label>
+            <input type="text" name="transaction_ref" class="form-input" placeholder="کد پیگیری بانکی (اختیاری)">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="form-label">یادداشت</label>
+            <textarea name="notes" rows="3" class="form-textarea" placeholder="توضیحات پرداخت..."></textarea>
+          </div>
+
+        </div>
+
+        <!-- Live preview of invoice -->
+        <div id="invoice-preview" class="mt-4 p-4 rounded-xl bg-gradient-to-br from-teal-50 to-emerald-50 hidden">
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p class="text-xs text-slate-500">فاکتور</p>
+              <p id="preview-number" class="text-sm font-bold text-slate-700">—</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500">مبلغ فاکتور</p>
+              <p id="preview-total" class="text-sm font-bold text-slate-700 ltr-nums">—</p>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500">پرداخت فعلی</p>
+              <p id="preview-amount" class="text-sm font-bold text-teal-700 ltr-nums">۰ ت</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6 pt-4 border-t border-slate-100">
+          <button type="submit" class="btn-gradient">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            ثبت پرداخت
+          </button>
+          <a href="{% url 'payments' %}" class="btn-outline">انصراف</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800 rounded-xl p-4">
+    <div class="flex gap-3">
+      <svg class="h-5 w-5 text-teal-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <div>
+        <p class="text-sm font-medium text-teal-800 dark:text-teal-200">نکته</p>
+        <p class="text-xs text-teal-700 dark:text-teal-300 mt-1">
+          اگر مبلغ پرداخت برابر با کل فاکتور باشد و وضعیت «تأیید شد» انتخاب شود، فاکتور به‌صورت خودکار به‌عنوان «پرداخت شده» علامت‌گذاری می‌شود.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function formatFa(num) {
+  return new Intl.NumberFormat('fa-IR').format(num) + ' ت';
+}
+
+const invoiceSelect = document.getElementById('invoice-select');
+const amountInput = document.getElementById('amount-input');
+const preview = document.getElementById('invoice-preview');
+const previewNumber = document.getElementById('preview-number');
+const previewTotal = document.getElementById('preview-total');
+const previewAmount = document.getElementById('preview-amount');
+
+function updatePreview() {
+  const opt = invoiceSelect.options[invoiceSelect.selectedIndex];
+  if (invoiceSelect.value) {
+    preview.classList.remove('hidden');
+    previewNumber.textContent = opt.getAttribute('data-number');
+    previewTotal.textContent = formatFa(parseInt(opt.getAttribute('data-total')));
+    const amount = parseInt(amountInput.value) || 0;
+    previewAmount.textContent = formatFa(amount);
+  } else {
+    preview.classList.add('hidden');
+  }
+}
+
+invoiceSelect.addEventListener('change', updatePreview);
+</script>
+{% endblock %}

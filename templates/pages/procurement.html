@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}تدارکات | APP CRM متخصص{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      {% include "partials/icon.html" with icon="send" %}
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">تدارکات</h1>
+      <p class="text-sm text-slate-500 mt-0.5">درخواست‌های ارسال شده به تدارکات و در دست اقدام</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="stat-card bg-gradient-amber">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">در دست اقدام</p>
+        <p class="text-2xl font-bold ltr-nums">{{ pending_count|fa_number }}</p>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-emerald">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">تکمیل شده</p>
+        <p class="text-2xl font-bold ltr-nums">{{ completed_count|fa_number }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active procurement requests -->
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">درخواست‌های در دست اقدام</h2>
+    </div>
+    <div class="p-5 space-y-3">
+      {% for pr in procurement_list %}
+      <div class="rounded-xl border border-slate-200 p-4 hover:shadow-md transition-shadow">
+        <div class="flex items-start justify-between gap-3 mb-2">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 text-white">
+              {% include "partials/icon.html" with icon="package" %}
+            </div>
+            <div>
+              <h3 class="text-sm font-bold">{{ pr.product_name }}</h3>
+              <p class="text-xs text-slate-500 ltr-nums">{{ pr.quantity|fa_number }} {{ pr.unit }} • {{ pr.customer.name }}</p>
+            </div>
+          </div>
+          <div class="flex flex-col items-end gap-1">
+            {% if pr.status == 'sent_to_procurement' %}<span class="badge badge-info">ارسال به تدارکات</span>
+            {% elif pr.status == 'in_progress' %}<span class="badge badge-warning">در دست اقدام</span>{% endif %}
+            <span class="text-[10px] text-slate-400 ltr-nums">{{ pr.created_at|date:"Y/m/d"|persian_digits }}</span>
+          </div>
+        </div>
+        {% if pr.notes %}
+        <p class="text-xs text-slate-500 bg-slate-50 rounded-lg p-2.5">{{ pr.notes }}</p>
+        {% endif %}
+        <div class="flex flex-wrap gap-2 mt-3 pt-2 border-t border-slate-100">
+          {% if pr.status == 'sent_to_procurement' %}
+          <a href="{% url 'product_request_mark_in_progress' pr.id %}" class="btn-outline text-xs px-3 py-1.5">شروع اقدام</a>
+          {% endif %}
+          {% if pr.status == 'in_progress' %}
+          <a href="{% url 'procurement_complete' pr.id %}" class="btn-gradient text-xs px-3 py-1.5" onclick="return confirm('تأیید تکمیل این درخواست؟')">تکمیل درخواست</a>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div class="text-center py-12 text-slate-400">
+        <p>درخواستی در تدارکات وجود ندارد</p>
+        <p class="text-xs mt-2">درخواست‌های محصول را از <a href="{% url 'product_request' %}" class="text-teal-600 hover:underline">فرم درخواست محصول</a> به تدارکات ارسال کنید</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Completed requests -->
+  {% if completed_list %}
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">تاریخچه تکمیل شده</h2>
+    </div>
+    <div class="p-5 space-y-2">
+      {% for pr in completed_list %}
+      <div class="flex items-center gap-3 p-3 rounded-lg bg-slate-50">
+        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium truncate">{{ pr.product_name }}</p>
+          <p class="text-xs text-slate-500 ltr-nums">{{ pr.quantity|fa_number }} {{ pr.unit }} • {{ pr.customer.name }}</p>
+        </div>
+        <span class="text-xs text-slate-400 ltr-nums">{{ pr.updated_at|date:"Y/m/d"|persian_digits }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

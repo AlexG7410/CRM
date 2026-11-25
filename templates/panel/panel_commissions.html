@@ -1,0 +1,80 @@
+{% extends "panel/panel_base.html" %}
+{% load crm_tags %}
+
+{% block title %}پورسانت‌های من | پنل مشتری{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+  <div class="flex items-center gap-3">
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">پورسانت‌های من</h1>
+      <p class="text-sm text-slate-500 mt-0.5">سابقه پورسانت دریافتی از سفارش‌ها</p>
+    </div>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="card p-4">
+      <p class="text-xs text-slate-500">در انتظار</p>
+      <p class="text-lg font-bold text-amber-600 ltr-nums mt-1">{{ pending|fa_number }}</p>
+      <p class="text-[10px] text-slate-400">تومان</p>
+    </div>
+    <div class="card p-4">
+      <p class="text-xs text-slate-500">تأیید شده</p>
+      <p class="text-lg font-bold text-teal-600 ltr-nums mt-1">{{ approved|fa_number }}</p>
+      <p class="text-[10px] text-slate-400">تومان</p>
+    </div>
+    <div class="card p-4">
+      <p class="text-xs text-slate-500">پرداخت‌شده</p>
+      <p class="text-lg font-bold text-emerald-600 ltr-nums mt-1">{{ paid|fa_number }}</p>
+      <p class="text-[10px] text-slate-400">تومان</p>
+    </div>
+    <div class="card p-4 bg-teal-50/40">
+      <p class="text-xs text-slate-500">جمع کل</p>
+      <p class="text-lg font-bold text-teal-700 ltr-nums mt-1">{{ total|fa_number }}</p>
+      <p class="text-[10px] text-slate-400">تومان</p>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">سابقه پورسانت ({{ commissions|length|fa_number }} مورد)</h2>
+    </div>
+    <div class="p-5 overflow-x-auto">
+      {% if commissions %}
+      <table class="data-table w-full">
+        <thead>
+          <tr><th>سفارش</th><th>تاریخ</th><th>مبلغ پایه</th><th>درصد</th><th>پورسانت</th><th>وضعیت</th></tr>
+        </thead>
+        <tbody>
+          {% for c in commissions %}
+          <tr>
+            <td class="font-mono text-xs"><a href="{% url 'panel_order_detail' c.order.id %}" class="text-teal-700 hover:underline">{{ c.order.number }}</a></td>
+            <td class="text-slate-500 ltr-nums">{{ c.created_at|date:"Y/m/d"|persian_digits }}</td>
+            <td class="ltr-nums">{{ c.base_amount|fa_number }}</td>
+            <td class="ltr-nums">{{ c.rate }}٪</td>
+            <td class="ltr-nums font-bold text-teal-700">{{ c.commission_amount|fa_number }}</td>
+            <td>
+              {% if c.status == 'pending' %}<span class="badge badge-warning">در انتظار</span>
+              {% elif c.status == 'approved' %}<span class="badge badge-info">تأیید شده</span>
+              {% elif c.status == 'paid' %}<span class="badge badge-success">پرداخت شده</span>
+              {% else %}<span class="badge badge-neutral">{{ c.get_status_display }}</span>{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="text-center py-10 text-slate-400">
+        <p>هنوز پورسانتی ثبت نشده است.</p>
+        <p class="text-xs mt-1">پورسانت پس از تأیید دریافت کالا در سفارش‌ها ثبت می‌شود.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

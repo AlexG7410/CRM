@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}لیست سفارش‌ها | APP CRM متخصص{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+  <div class="flex items-center gap-3 mb-6">
+    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+      {% include "partials/icon.html" with icon="cart" %}
+    </div>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">لیست سفارش‌ها</h1>
+      <p class="text-sm text-slate-500 mt-0.5">مدیریت و پیگیری سفارش‌ها</p>
+    </div>
+  </div>
+
+  <!-- گردش‌کار سفارش -->
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">مراحل سفارش</h2>
+      <p class="text-xs text-slate-500 mt-0.5">هر سفارش چهار مرحله را طی می‌کند. پورسانت در مرحله آخر به‌طور خودکار ثبت می‌شود.</p>
+    </div>
+    <div class="p-5">
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <span class="badge badge-warning">۱. در انتظار</span>
+        <svg class="h-3 w-3 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="badge badge-info">۲. ارسال شده</span>
+        <svg class="h-3 w-3 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="badge badge-teal">۳. تحویل شده</span>
+        <svg class="h-3 w-3 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="badge badge-success">۴. تأیید دریافت</span>
+        <span class="mx-2 text-slate-400">|</span>
+        <span class="inline-flex items-center gap-1 text-teal-700 font-medium">
+          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          پورسانت در مرحله ۴ ثبت می‌شود
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">سفارش‌ها ({{ orders|length|fa_number }} مورد)</h2>
+    </div>
+    <div class="p-5 overflow-x-auto">
+      <table class="data-table w-full">
+        <thead>
+          <tr>
+            <th>شماره</th>
+            <th>مشتری</th>
+            <th>تاریخ</th>
+            <th>اقلام</th>
+            <th>مبلغ کل</th>
+            <th>پورسانت</th>
+            <th>وضعیت</th>
+            <th>عملیات بعدی</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for o in orders %}
+          <tr>
+            <td class="font-mono text-xs">{{ o.number }}</td>
+            <td class="font-medium">{{ o.customer.name }}</td>
+            <td class="text-slate-500 ltr-nums">{{ o.created_at|date:"Y/m/d"|persian_digits }}</td>
+            <td class="ltr-nums">{{ o.total_items|fa_number }}</td>
+            <td class="ltr-nums font-bold">{{ o.total|fa_number }}</td>
+            <td class="ltr-nums text-teal-700">{{ o.commission_amount|fa_number }}</td>
+            <td>
+              {% if o.status == 'pending' %}<span class="badge badge-warning">در انتظار</span>
+              {% elif o.status == 'shipped' %}<span class="badge badge-info">ارسال شده</span>
+              {% elif o.status == 'delivered' %}<span class="badge badge-teal">تحویل شده</span>
+              {% elif o.status == 'confirmed_received' %}<span class="badge badge-success">تأیید دریافت</span>
+              {% elif o.status == 'cancelled' %}<span class="badge badge-neutral">لغو شده</span>
+              {% else %}<span class="badge badge-neutral">{{ o.get_status_display }}</span>{% endif %}
+            </td>
+            <td>
+              {% if o.status == 'pending' %}
+              <a href="{% url 'order_ship' o.id %}" class="btn-outline text-xs px-3 py-1.5" onclick="return confirm('ارسال این سفارش به مشتری؟')">
+                <svg class="inline h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                ارسال
+              </a>
+              {% elif o.status == 'shipped' %}
+              <a href="{% url 'order_deliver' o.id %}" class="btn-outline text-xs px-3 py-1.5" onclick="return confirm('تحویل این سفارش به مشتری؟')">
+                <svg class="inline h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>
+                تحویل به مشتری
+              </a>
+              {% elif o.status == 'delivered' %}
+              <a href="{% url 'order_confirm_receipt' o.id %}" class="btn-gradient text-xs px-3 py-1.5" onclick="return confirm('تأیید دریافت کالا توسط مشتری؟ پورسانت به‌طور خودکار ثبت می‌شود.')">
+                <svg class="inline h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                تأیید دریافت
+              </a>
+              {% elif o.status == 'confirmed_received' %}
+              <a href="{% url 'commissions' %}" class="text-xs text-teal-700 font-medium inline-flex items-center gap-1 hover:underline">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                پورسانت ثبت شد
+              </a>
+              {% else %}
+              <span class="text-xs text-slate-400">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="8" class="text-center py-8 text-slate-400">سفارشی ثبت نشده</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

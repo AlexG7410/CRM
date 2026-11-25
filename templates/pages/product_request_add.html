@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}درخواست محصول جدید | APP CRM متخصص{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up max-w-3xl mx-auto">
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{% url 'product_request' %}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-800">درخواست محصول جدید</h1>
+      <p class="text-sm text-slate-500 mt-0.5">ثبت درخواست محصول از مشتری</p>
+    </div>
+  </div>
+
+  {% if messages %}{% for message in messages %}<div class="alert alert-{{ message.tags|default:'error' }}">{{ message }}</div>{% endfor %}{% endif %}
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">اطلاعات درخواست</h2>
+    </div>
+    <div class="p-5">
+      <form method="post" action="{% url 'product_request_add' %}">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="form-label">مشتری *</label>
+            <select name="customer" required class="form-select">
+              <option value="">— انتخاب مشتری —</option>
+              {% for c in customers %}
+              <option value="{{ c.id }}">{{ c.name }} ({{ c.get_type_display }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="form-label">محصول از لیست (اختیاری)</label>
+            <select name="product" class="form-select">
+              <option value="">— انتخاب محصول —</option>
+              {% for p in products %}
+              <option value="{{ p.id }}">{{ p.image_emoji }} {{ p.name }} ({{ p.brand.name }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="md:col-span-2">
+            <label class="form-label">نام محصول *</label>
+            <input type="text" name="product_name" required class="form-input" placeholder="اگر محصول از لیست انتخاب نشده، نام آن را بنویسید">
+          </div>
+          <div>
+            <label class="form-label">تعداد *</label>
+            <input type="number" name="quantity" required min="1" value="1" class="form-input">
+          </div>
+          <div>
+            <label class="form-label">واحد</label>
+            <input type="text" name="unit" value="عدد" class="form-input">
+          </div>
+          <div class="md:col-span-2">
+            <label class="form-label">توضیحات</label>
+            <textarea name="notes" rows="3" class="form-textarea" placeholder="توضیحات درخواست..."></textarea>
+          </div>
+        </div>
+        <div class="flex gap-3 mt-6 pt-4 border-t border-slate-100">
+          <button type="submit" class="btn-gradient">ثبت درخواست</button>
+          <a href="{% url 'product_request' %}" class="btn-outline">انصراف</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

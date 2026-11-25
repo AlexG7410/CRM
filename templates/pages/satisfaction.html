@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}رضایت مندی | APP CRM متخصص{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+        {% include "partials/icon.html" with icon="star" %}
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold text-slate-800">رضایت مندی مشتریان</h1>
+        <p class="text-sm text-slate-500 mt-0.5">نظرات و امتیازات مشتریان</p>
+      </div>
+    </div>
+    <a href="{% url 'satisfaction_add' %}" class="btn-gradient">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      ثبت نظر جدید
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="stat-card bg-gradient-amber">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">میانگین امتیاز</p>
+        <p class="text-2xl font-bold ltr-nums">{{ avg_rating|fa_number }} / ۵</p>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-emerald">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">کل نظرات</p>
+        <p class="text-2xl font-bold ltr-nums">{{ total_reviews|fa_number }}</p>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-teal">
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-white/80">نظرات ۵ ستاره</p>
+        <p class="text-2xl font-bold ltr-nums">{{ five_star_count|fa_number }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">نظرات مشتریان</h2>
+    </div>
+    <div class="p-5 space-y-3">
+      {% for r in reviews %}
+      <div class="rounded-xl border border-slate-200 p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div>
+            <h3 class="text-sm font-bold">{{ r.customer.name }}</h3>
+            <p class="text-xs text-slate-500 ltr-nums">{{ r.created_at|date:"Y/m/d"|persian_digits }}</p>
+          </div>
+          <div class="flex items-center gap-0.5">
+            {% for i in "12345"|make_list %}
+            {% if forloop.counter <= r.rating %}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            {% else %}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        {% if r.comment %}
+        <p class="text-sm text-slate-600 bg-slate-50 rounded-lg p-3">{{ r.comment }}</p>
+        {% endif %}
+        <div class="grid grid-cols-3 gap-2 mt-3 text-center text-xs">
+          <div class="rounded bg-slate-50 p-2">
+            <p class="font-bold ltr-nums">{{ r.product_quality|fa_number }}/۵</p>
+            <p class="text-slate-500">کیفیت محصول</p>
+          </div>
+          <div class="rounded bg-slate-50 p-2">
+            <p class="font-bold ltr-nums">{{ r.service_quality|fa_number }}/۵</p>
+            <p class="text-slate-500">کیفیت خدمات</p>
+          </div>
+          <div class="rounded bg-slate-50 p-2">
+            <p class="font-bold ltr-nums">{{ r.delivery_speed|fa_number }}/۵</p>
+            <p class="text-slate-500">سرعت تحویل</p>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="text-center py-12 text-slate-400">
+        <p>هنوز نظری ثبت نشده است</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

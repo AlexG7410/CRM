@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}افزودن محصول | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up max-w-4xl mx-auto">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <a href="{% url 'products' %}" class="p-2 rounded-lg border border-slate-200 text-slate-500 hover:text-teal-600 hover:border-teal-400">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md">
+        {% include "partials/icon.html" with icon="package" %}
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold text-slate-800">افزودن محصول جدید</h1>
+        <p class="text-sm text-slate-500 mt-0.5">ثبت محصول جدید در کاتالوگ</p>
+      </div>
+    </div>
+    <a href="{% url 'brand_add' %}" class="btn-outline text-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      افزودن برند جدید
+    </a>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'error' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">اطلاعات محصول</h2>
+    </div>
+    <div class="p-5">
+      <form method="post" action="{% url 'product_add' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div class="md:col-span-2">
+            <label class="form-label">نام محصول *</label>
+            <input type="text" name="name" required class="form-input" placeholder="مثلاً: پد هیدروکلوئیدی چندلایه">
+          </div>
+
+          <div>
+            <label class="form-label">برند *</label>
+            <select name="brand" required class="form-select">
+              <option value="">— انتخاب کنید —</option>
+              {% for b in brands %}
+              <option value="{{ b.id }}">{{ b.logo_emoji }} {{ b.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">دسته‌بندی</label>
+            <select name="category" class="form-select">
+              {% for value, label in categories %}
+              <option value="{{ value }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">قیمت (تومان) *</label>
+            <input type="number" name="price" required min="0" class="form-input" placeholder="مثلاً: 285000">
+          </div>
+
+          <div>
+            <label class="form-label">موجودی اولیه</label>
+            <input type="number" name="stock" min="0" value="0" class="form-input" placeholder="مثلاً: 100">
+          </div>
+
+          <div>
+            <label class="form-label">واحد</label>
+            <input type="text" name="unit" value="عدد" class="form-input" placeholder="مثلاً: عدد، تیوپ، طول متر">
+          </div>
+
+          <div>
+            <label class="form-label">آستان هشدار موجودی کم</label>
+            <input type="number" name="low_stock_threshold" min="0" value="60" class="form-input">
+          </div>
+
+          <div>
+            <label class="form-label">آیکون (اموجی)</label>
+            <input type="text" name="image_emoji" value="📦" maxlength="10" class="form-input" placeholder="📦">
+            <p class="text-[11px] text-slate-400 mt-1">به جای آپلود تصویر می‌توانید یک اموجی انتخاب کنید</p>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="form-label">تصویر محصول (اختیاری)</label>
+            <input type="file" name="image" accept="image/*" class="form-input">
+            <p class="text-[11px] text-slate-400 mt-1">در صورت آپلود تصویر، به جای اموجی نمایش داده می‌شود</p>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="form-label">توضیحات</label>
+            <textarea name="description" rows="3" class="form-textarea" placeholder="توضیحات محصول..."></textarea>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="is_active" checked class="h-4 w-4 rounded text-teal-600">
+              <span class="text-sm font-medium">محصول فعال است</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6 pt-4 border-t border-slate-100">
+          <button type="submit" class="btn-gradient">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            ذخیره محصول
+          </button>
+          <a href="{% url 'products' %}" class="btn-outline">انصراف</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

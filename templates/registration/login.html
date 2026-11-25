@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}ورود به سیستم | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center p-4" style="margin-top: -60px;">
+  <div class="w-full max-w-md">
+
+    <!-- Logo & Brand -->
+    <div class="text-center mb-8">
+      <div class="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-2xl shadow-teal-500/30 mb-4">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+      <h1 class="text-3xl font-bold gradient-text">زخم‌شفـا CRM</h1>
+      <p class="text-sm text-slate-500 mt-2">سامانه مدیریت ارتباط با مشتریان تخصص زخم</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="glass-card rounded-2xl shadow-xl p-8 animate-slide-up">
+
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'error' }} mb-4">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+
+        <div class="space-y-4">
+          <div>
+            <label class="form-label">نام کاربری</label>
+            <div class="relative">
+              <svg class="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <input type="text" name="username" required autofocus
+                     class="form-input pr-10"
+                     placeholder="نام کاربری خود را وارد کنید"
+                     value="{{ form.username.value|default:'' }}">
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">گذرواژه</label>
+            <div class="relative">
+              <svg class="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <input type="password" name="password" required
+                     class="form-input pr-10"
+                     placeholder="گذرواژه خود را وارد کنید">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-sm">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="h-4 w-4 rounded text-teal-600">
+              <span class="text-slate-600">مرا به خاطر بسپار</span>
+            </label>
+          </div>
+
+          <button type="submit" class="w-full btn-gradient justify-center py-3 text-base">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+            ورود به سیستم
+          </button>
+        </div>
+      </form>
+
+      <!-- Demo credentials hint -->
+      <div class="mt-6 p-3 rounded-xl bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800">
+        <p class="text-xs text-teal-700 dark:text-teal-300 font-medium mb-1">🔑 اطلاعات ورود نمایشی:</p>
+        <p class="text-xs text-teal-600 dark:text-teal-400 ltr-nums">نام کاربری: admin</p>
+        <p class="text-xs text-teal-600 dark:text-teal-400 ltr-nums">گذرواژه: admin123</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <p class="text-center text-xs text-slate-400 mt-6">
+      © ۱۴۰۳ سامانه زخم‌شفـا CRM — تمامی حقوق محفوظ است
+    </p>
+  </div>
+</div>
+{% endblock %}

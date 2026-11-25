@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}لاگ فعالیت‌ها | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white shadow-md shadow-teal-500/20">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 3v18h18"/>
+          <path d="m19 9-5 5-4-4-3 3"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold text-slate-800">لاگ فعالیت‌ها</h1>
+        <p class="text-sm text-slate-500 mt-0.5">مشاهده تمام فعالیت‌های کاربران در سیستم</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="stat-card bg-gradient-teal">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">فعالیت‌های امروز</p>
+          <p class="text-2xl font-bold ltr-nums">{{ today_count|fa_number }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-emerald">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">کاربران فعال</p>
+          <p class="text-2xl font-bold ltr-nums">{{ total_users|fa_number }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-cyan">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">کل فعالیت‌ها</p>
+          <p class="text-2xl font-bold ltr-nums">{{ total_logs|fa_number }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">فیلتر فعالیت‌ها</h2>
+    </div>
+    <div class="p-5">
+      <form method="get" action="{% url 'activity_log' %}" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div>
+          <label class="form-label">نوع فعالیت</label>
+          <select name="action" class="form-select">
+            <option value="">همه فعالیت‌ها</option>
+            {% for value, label in actions %}
+            <option value="{{ value }}" {% if selected_action == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="form-label">کاربر</label>
+          <select name="user" class="form-select">
+            <option value="">همه کاربران</option>
+            {% for u in users_with_logs %}
+            <option value="{{ u.user_id }}" {% if selected_user == u.user_id|stringformat:'s' %}selected{% endif %}>{{ u.display_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="form-label">جستجو</label>
+          <div class="relative">
+            <svg class="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" name="q" value="{{ search }}" class="form-input pr-10" placeholder="جستجو در توضیحات...">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Activity list -->
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50 flex items-center justify-between">
+      <h2 class="text-base font-semibold text-slate-800">آخرین فعالیت‌ها</h2>
+      <span class="text-xs text-slate-500">{{ logs|length|fa_number }} مورد</span>
+    </div>
+    <div class="p-5">
+      <div class="space-y-2 max-h-[600px] overflow-y-auto scrollbar-thin">
+
+        {% for log in logs %}
+        <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors border border-slate-100">
+          <div class="text-2xl shrink-0">{{ log.action_icon }}</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <div>
+                <p class="text-sm font-medium text-slate-800">{{ log.description }}</p>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  <span class="font-medium">{{ log.user_name }}</span>
+                  <span class="text-slate-400"> • </span>
+                  <span>{{ log.module }}</span>
+                </p>
+              </div>
+              <span class="badge badge-{{ log.action_color }}">{{ log.get_action_display }}</span>
+            </div>
+            <div class="flex items-center gap-3 text-[11px] text-slate-400 mt-1">
+              <span class="flex items-center gap-1">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span class="ltr-nums">{{ log.date_str|persian_digits }}</span>
+              </span>
+              <span class="flex items-center gap-1">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="ltr-nums">{{ log.time_str|persian_digits }}</span>
+              </span>
+              {% if log.ip_address %}
+              <span class="flex items-center gap-1">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2"/><path d="M5 18H19M8 22H12M2 10V18M22 10V18"/></svg>
+                <span class="ltr-nums">{{ log.ip_address }}</span>
+              </span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-12 text-slate-400">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto mb-3 opacity-40">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <p>هنوز فعالیتی ثبت نشده است</p>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

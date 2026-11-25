@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}ارتباط آنلاین | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+
+  {% include "partials/page_header.html" with title="ارتباط آنلاین با مشتری" description="پاسخگویی به پیام‌های مشتریان به صورت لحظه‌ای" icon="chat" %}
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="height: calc(100vh - 220px); min-height: 500px;">
+
+    <!-- Conversation list -->
+    <div class="lg:col-span-1 card flex flex-col overflow-hidden">
+      <div class="px-4 py-3 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+        <h3 class="text-sm font-semibold">مکالمات اخیر</h3>
+      </div>
+      <div class="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin">
+        {% for c in customers_with_msgs %}
+        <a href="{% url 'chat' %}?customer_id={{ c.id }}"
+           class="block w-full flex items-start gap-3 p-3 rounded-lg transition-colors
+                  {% if selected_customer and selected_customer.id == c.id %}bg-teal-50 ring-1 ring-teal-500{% else %}hover:bg-slate-50{% endif %}">
+          {% avatar_gradient c.avatar_color as gradient %}
+          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 text-white text-sm font-bold shrink-0 {{ gradient }}">
+            {{ c.name|slice:"1" }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate">{{ c.name }}</p>
+            {% with last_msg=c.messages.last %}
+              {% if last_msg %}
+              <p class="text-xs text-slate-500 truncate mt-0.5">{{ last_msg.message }}</p>
+              {% endif %}
+            {% endwith %}
+          </div>
+        </a>
+        {% empty %}
+        <p class="text-center text-sm text-slate-400 py-6">مکالمه‌ای موجود نیست</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Chat area -->
+    <div class="lg:col-span-2 card flex flex-col overflow-hidden">
+      {% if selected_customer %}
+      <div class="px-4 py-3 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50 flex items-center gap-3">
+        {% avatar_gradient selected_customer.avatar_color as gradient %}
+        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 text-white text-sm font-bold {{ gradient }}">
+          {{ selected_customer.name|slice:"1" }}
+        </div>
+        <div>
+          <p class="text-sm font-semibold">{{ selected_customer.name }}</p>
+          <p class="text-xs text-emerald-600 flex items-center gap-1">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            آنلاین
+          </p>
+        </div>
+      </div>
+
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 chat-container scrollbar-thin">
+        {% for msg in conversation %}
+        <div class="flex {% if msg.from_customer %}justify-start{% else %}justify-end{% endif %}">
+          <div class="chat-bubble {% if msg.from_customer %}customer{% else %}operator{% endif %}">
+            <p>{{ msg.message }}</p>
+            <p class="text-[10px] mt-1 ltr-nums {% if msg.from_customer %}text-slate-500{% else %}text-white/70{% endif %}">
+              {{ msg.created_at|date:"H:i" }}
+            </p>
+          </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-slate-400 mt-12">
+          {% include "partials/icon.html" with icon="chat" %}
+          <p class="text-sm mt-2">شروع گفتگو با {{ selected_customer.name }}</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <form id="chat-form" action="{% url 'chat_send' %}" method="post" class="p-3 border-t border-slate-100 flex gap-2">
+        {% csrf_token %}
+        <input type="hidden" name="customer_id" value="{{ selected_customer.id }}">
+        <input type="text" name="message" placeholder="پیام خود را بنویسید..." class="form-input flex-1" required>
+        <button type="submit" class="btn-gradient">
+          {% include "partials/icon.html" with icon="send" %}
+          ارسال
+        </button>
+      </form>
+      {% else %}
+      <div class="empty-state flex-1 flex flex-col items-center justify-center">
+        {% include "partials/icon.html" with icon="chat" %}
+        <p>مشتری را برای شروع گفتگو انتخاب کنید</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

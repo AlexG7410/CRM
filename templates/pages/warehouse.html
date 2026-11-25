@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block title %}انبار و خروجی | زخم‌شفـا CRM{% endblock %}
+
+{% block content %}
+<div class="space-y-6 animate-slide-up">
+
+  {% include "partials/page_header.html" with title="انبار و خروجی انبار" description="ثبت و مدیریت ورود و خروج کالاها" icon="boxes" %}
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="stat-card bg-gradient-emerald">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">ورودی امروز</p>
+          <p class="text-2xl font-bold ltr-nums">{{ in_count|fa_number }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-rose">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">خروجی امروز</p>
+          <p class="text-2xl font-bold ltr-nums">{{ out_count|fa_number }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-teal">
+      <div class="relative flex items-start justify-between">
+        <div class="space-y-2">
+          <p class="text-sm font-medium text-white/80">کل تراکنش‌ها</p>
+          <p class="text-2xl font-bold ltr-nums">{{ movements|length|fa_number }}</p>
+        </div>
+        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="px-5 py-4 border-b border-slate-100 bg-gradient-to-l from-teal-50/50 to-emerald-50/50">
+      <h2 class="text-base font-semibold text-slate-800">سوابق ورود و خروج</h2>
+    </div>
+    <div class="p-5 overflow-x-auto">
+      <table class="data-table w-full">
+        <thead>
+          <tr>
+            <th>تاریخ</th>
+            <th>نوع</th>
+            <th>محصول</th>
+            <th>تعداد</th>
+            <th>مرجع</th>
+            <th>اپراتور</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in movements %}
+          <tr>
+            <td class="text-slate-500 ltr-nums">{{ m.created_at|date:"Y/m/d H:i"|persian_digits }}</td>
+            <td>
+              {% if m.type == 'in' %}
+              <span class="badge badge-success">↓ ورودی</span>
+              {% else %}
+              <span class="badge badge-danger">↑ خروجی</span>
+              {% endif %}
+            </td>
+            <td class="font-medium">{{ m.product.name }}</td>
+            <td class="ltr-nums font-bold">{{ m.quantity|fa_number }} {{ m.product.unit }}</td>
+            <td class="text-xs text-slate-500 font-mono">{{ m.reference }}</td>
+            <td class="text-slate-500">{{ m.operator }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="text-center py-8 text-slate-400">هیچ تراکنشی ثبت نشده</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

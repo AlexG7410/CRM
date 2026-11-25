@@ -1,0 +1,1581 @@
+[
+  {
+    "model": "crm.brand",
+    "pk": 1,
+    "fields": {
+      "name": "هارتمن",
+      "country": "آلمان",
+      "logo_emoji": "🩹",
+      "description": "برند آلمانی محصولات پانسمان پیشرفته - از سایت wounda.ir",
+      "created_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.brand",
+    "pk": 2,
+    "fields": {
+      "name": "یوروفارم",
+      "country": "آلمان",
+      "logo_emoji": "💊",
+      "description": "برند یوروفارم آلمان - از سایت wounda.ir",
+      "created_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.brand",
+    "pk": 3,
+    "fields": {
+      "name": "فاپسکو",
+      "country": "ایران",
+      "logo_emoji": "🇮🇷",
+      "description": "برند ایرانی فاپسکو - از سایت wounda.ir",
+      "created_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.brand",
+    "pk": 4,
+    "fields": {
+      "name": "تریتا",
+      "country": "ایران",
+      "logo_emoji": "🌿",
+      "description": "برند ایرانی تریتا (طباسپت) - از سایت wounda.ir",
+      "created_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.brand",
+    "pk": 5,
+    "fields": {
+      "name": "زخمیران",
+      "country": "ایران",
+      "logo_emoji": "🧬",
+      "description": "برند ایرانی زخمیران - از سایت wounda.ir",
+      "created_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 1,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان هیدروکل نازک هارتمن",
+      "category": "hydrocolloid",
+      "wound_type": "all",
+      "description": "پانسمان هیدروکلوئیدی نازک برای زخم‌های سطحی با ترشح کم. مناسب برای زخم‌های گرانوله و سوختگی‌ها. از کاتالوگ wounda.ir",
+      "price": 620000,
+      "stock": 145,
+      "unit": "عدد",
+      "image_emoji": "🩹",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/08/hartmann-hydrocol-thin-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 2,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان آلژینات سوربالگون هارتمن",
+      "category": "alginate",
+      "wound_type": "all",
+      "description": "پانسمان آلژینات برای زخم‌های با ترشح متوسط تا زیاد. از کاتالوگ wounda.ir",
+      "price": 425000,
+      "stock": 67,
+      "unit": "عدد",
+      "image_emoji": "🟦",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/08/hartmann-sorbalgon-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 3,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان آلژینات کلسیم پرکننده سوربالگون هارتمن",
+      "category": "alginate",
+      "wound_type": "all",
+      "description": "پانسمان آلژینات کلسیم پرکننده برای حفره زخم. از کاتالوگ wounda.ir",
+      "price": 510000,
+      "stock": 38,
+      "unit": "عدد",
+      "image_emoji": "🟩",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/08/hartmann-sorbalgon-filling-calcium-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 4,
+    "fields": {
+      "brand": 2,
+      "name": "پانسمان استریل درپ یددار اینسیژن فیلم یورودرم یوروفارم",
+      "category": "transparent",
+      "wound_type": "surgical",
+      "description": "پانسمان شفاف استریل برای زخم‌های جراحی. از کاتالوگ wounda.ir",
+      "price": 365000,
+      "stock": 92,
+      "unit": "عدد",
+      "image_emoji": "💎",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/08/uerofarm-euroderm-insize-incision-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 5,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان جراحی آماده کاسموپور آنتی باکتریال هارتمن",
+      "category": "surgical",
+      "wound_type": "surgical",
+      "description": "پانسمان جراحی آنتی‌باکتریال آماده. از کاتالوگ wounda.ir",
+      "price": 195000,
+      "stock": 156,
+      "unit": "عدد",
+      "image_emoji": "🩹",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/08/hartmann-cosmopor-antibacterial-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 6,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان جراحی پددار ضد آب هیدروفیلم پلاس هارتمن",
+      "category": "surgical",
+      "wound_type": "surgical",
+      "description": "پانسمان جراحی پددار ضد آب. از کاتالوگ wounda.ir",
+      "price": 285000,
+      "stock": 78,
+      "unit": "عدد",
+      "image_emoji": "🟦",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/08/hartmann-hydrofilm-plus-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 7,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان زتوویت پلاس سیلیکون بوردر چسبدار هارتمن",
+      "category": "foam",
+      "wound_type": "all",
+      "description": "پانسمان فوم سیلیکونی با لبه چسبدار. از کاتالوگ wounda.ir",
+      "price": 680000,
+      "stock": 45,
+      "unit": "عدد",
+      "image_emoji": "🔷",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/08/hartmann-zetuvit-plus-silicone-border-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 8,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان زتوویت پلاس سیلیکونی هارتمن",
+      "category": "foam",
+      "wound_type": "all",
+      "description": "پانسمان فوم سیلیکونی. از کاتالوگ wounda.ir",
+      "price": 560000,
+      "stock": 55,
+      "unit": "عدد",
+      "image_emoji": "🔷",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/08/hartmann-zetuvit-plus-silicone-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 9,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان شفاف رولی هیدروفیلم هارتمن",
+      "category": "transparent",
+      "wound_type": "all",
+      "description": "پانسمان شفاف رولی برای پوشش. از کاتالوگ wounda.ir",
+      "price": 425000,
+      "stock": 32,
+      "unit": "عدد",
+      "image_emoji": "💎",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/08/hartmann-hydrofilm-roll-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 10,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان طبابرن",
+      "category": "silver",
+      "wound_type": "chronic",
+      "description": "پانسمان حاوی نقره برای زخم‌های عفونی. قیمت: ۶۵۹,۰۰۰ تا ۲,۷۳۹,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 659000,
+      "stock": 25,
+      "unit": "عدد",
+      "image_emoji": "✨",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/07/tababurn-burn-dressing-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 11,
+    "fields": {
+      "brand": 4,
+      "name": "پانسمان طبادرم",
+      "category": "hydrocolloid",
+      "wound_type": "all",
+      "description": "پانسمان هیدروکلوئیدی طبادرم. قیمت: ۵۰۳,۰۰۰ تا ۲,۱۵۶,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 503000,
+      "stock": 54,
+      "unit": "عدد",
+      "image_emoji": "🟦",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/07/tabaderm-hydrocolloid-dressing-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 12,
+    "fields": {
+      "brand": 4,
+      "name": "پانسمان طبادرم پلاس نقره",
+      "category": "silver",
+      "wound_type": "chronic",
+      "description": "پانسمان هیدروکلوئیدی حاوی نقره. قیمت: ۶۲۱,۰۰۰ تا ۲,۵۴۵,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 621000,
+      "stock": 41,
+      "unit": "عدد",
+      "image_emoji": "✨",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/07/tabaderm-plus-silver-dressing-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 13,
+    "fields": {
+      "brand": 4,
+      "name": "پانسمان طبافلکس",
+      "category": "foam",
+      "wound_type": "all",
+      "description": "پانسمان فوم طبافلکس. قیمت: ۳۸۶,۰۰۰ تا ۶۸۴,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 386000,
+      "stock": 88,
+      "unit": "عدد",
+      "image_emoji": "🟦",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/07/tabaflex-dressing-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 14,
+    "fields": {
+      "brand": 4,
+      "name": "پانسمان طبافلکس پرو",
+      "category": "foam",
+      "wound_type": "all",
+      "description": "پانسمان فوم حرفه‌ای طبافلکس پرو. قیمت: ۶۸۴,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 684000,
+      "stock": 36,
+      "unit": "عدد",
+      "image_emoji": "🔷",
+      "image_url": "https://wounda.ir/wp-content/uploads/2026/07/tebaflex-pro-dressing-300x300.webp",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 15,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان هیدروکل هارتمن",
+      "category": "hydrocolloid",
+      "wound_type": "all",
+      "description": "پانسمان هیدروکلوئیدی هارتمن. قیمت: ۶۲۰,۰۰۰ تا ۱,۱۴۰,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 620000,
+      "stock": 48,
+      "unit": "عدد",
+      "image_emoji": "🩹",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 16,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان فوم هیدروتک هارتمن",
+      "category": "foam",
+      "wound_type": "all",
+      "description": "پانسمان فوم هیدروتک با لایه هیدروژل. قیمت: ۶۹۰,۰۰۰ تا ۲,۲۰۰,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 690000,
+      "stock": 42,
+      "unit": "عدد",
+      "image_emoji": "🟦",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 17,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان نچسب استریل آترومن نقره هارتمن",
+      "category": "silver",
+      "wound_type": "chronic",
+      "description": "پانسمان نچسب حاوی نقره. قیمت: ۳۲۰,۰۰۰ تا ۹۹۹,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 320000,
+      "stock": 73,
+      "unit": "عدد",
+      "image_emoji": "✨",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 18,
+    "fields": {
+      "brand": 2,
+      "name": "پانسمان نقره بدون چسب سیلورمد یوروفارم",
+      "category": "silver",
+      "wound_type": "chronic",
+      "description": "پانسمان نقره بدون چسب. قیمت: ۷۲۰,۰۰۰ تا ۱,۳۵۰,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 720000,
+      "stock": 35,
+      "unit": "عدد",
+      "image_emoji": "✨",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 19,
+    "fields": {
+      "brand": 2,
+      "name": "پانسمان نقره چسب‌دار سیلورمد یوروفارم",
+      "category": "silver",
+      "wound_type": "chronic",
+      "description": "پانسمان نقره چسب‌دار. قیمت: ۵۵۰,۰۰۰ تا ۷۵۰,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 550000,
+      "stock": 58,
+      "unit": "عدد",
+      "image_emoji": "✨",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 20,
+    "fields": {
+      "brand": 2,
+      "name": "پانسمان هیدروفایبر یوروسل یوروفارم",
+      "category": "hydrofiber",
+      "wound_type": "all",
+      "description": "پانسمان هیدروفایبر. قیمت: ۱,۰۰۰,۰۰۰ تا ۲,۵۰۰,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 1000000,
+      "stock": 22,
+      "unit": "عدد",
+      "image_emoji": "🟩",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 21,
+    "fields": {
+      "brand": 1,
+      "name": "پانسمان فوق جاذب زتوویت پلاس هارتمن",
+      "category": "absorbent",
+      "wound_type": "all",
+      "description": "پانسمان فوق جاذب. قیمت: ۵۶۰,۰۰۰ تا ۱,۸۹۰,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 560000,
+      "stock": 40,
+      "unit": "عدد",
+      "image_emoji": "🟦",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 22,
+    "fields": {
+      "brand": 2,
+      "name": "پانسمان فوم بدون چسب یورودرم یوروفارم",
+      "category": "foam",
+      "wound_type": "all",
+      "description": "پانسمان فوم بدون چسب. قیمت: ۴۰۰,۰۰۰ تا ۱,۳۵۰,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 400000,
+      "stock": 65,
+      "unit": "عدد",
+      "image_emoji": "🟦",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 23,
+    "fields": {
+      "brand": 4,
+      "name": "پودر طبا استاپ",
+      "category": "healing",
+      "wound_type": "all",
+      "description": "پودر توقف خونریزی طبا استاپ. قیمت: ۷۴۳,۰۰۰ تا ۲,۲۷۷,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 743000,
+      "stock": 18,
+      "unit": "عدد",
+      "image_emoji": "🧪",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 24,
+    "fields": {
+      "brand": 4,
+      "name": "پودر طباگرن",
+      "category": "collagen",
+      "wound_type": "chronic",
+      "description": "پودر کلاژن طباگرن. قیمت: ۹۸۹,۰۰۰ تا ۱,۵۵۱,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 989000,
+      "stock": 15,
+      "unit": "عدد",
+      "image_emoji": "🧪",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 25,
+    "fields": {
+      "brand": 4,
+      "name": "پودر طباگرن پلاس نقره",
+      "category": "collagen",
+      "wound_type": "chronic",
+      "description": "پودر کلاژن با نقره. قیمت: ۱,۴۳۰,۰۰۰ تا ۲,۱۷۶,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 1430000,
+      "stock": 12,
+      "unit": "عدد",
+      "image_emoji": "🧪",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 26,
+    "fields": {
+      "brand": 4,
+      "name": "ژل ایکس PHMB طباسپت",
+      "category": "healing",
+      "wound_type": "all",
+      "description": "ژل PHMB ضدعفونی‌کننده. قیمت: ۶۹۸,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 698000,
+      "stock": 30,
+      "unit": "تیوپ",
+      "image_emoji": "🧴",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 27,
+    "fields": {
+      "brand": 5,
+      "name": "ژل دبرید زخمیران",
+      "category": "debridement",
+      "wound_type": "chronic",
+      "description": "ژل دبریدمان آنزیمی. قیمت: ۳۹۸,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 398000,
+      "stock": 45,
+      "unit": "تیوپ",
+      "image_emoji": "🧴",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 28,
+    "fields": {
+      "brand": 1,
+      "name": "ژل هیدروزورب هارتمن",
+      "category": "hydrogel",
+      "wound_type": "all",
+      "description": "ژل هیدروژل برای زخم‌های خشک. قیمت: ۶۳۰,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 630000,
+      "stock": 28,
+      "unit": "تیوپ",
+      "image_emoji": "💧",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 29,
+    "fields": {
+      "brand": 3,
+      "name": "فوم پانسمان فاپسکو",
+      "category": "foam",
+      "wound_type": "all",
+      "description": "فوم پانسمان. قیمت: ۸۳۶,۰۰۰ تا ۱,۷۴۸,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 836000,
+      "stock": 20,
+      "unit": "عدد",
+      "image_emoji": "🟦",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 30,
+    "fields": {
+      "brand": 4,
+      "name": "محلول طباسپت",
+      "category": "healing",
+      "wound_type": "all",
+      "description": "محلول شستشو و ضدعفونی. قیمت: ۶۸۸,۰۰۰ تا ۱,۶۷۹,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 688000,
+      "stock": 50,
+      "unit": "بطری",
+      "image_emoji": "🧴",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 31,
+    "fields": {
+      "brand": 4,
+      "name": "هیلینگ ژل طباسپت",
+      "category": "healing",
+      "wound_type": "all",
+      "description": "ژل ترمیمی. قیمت: ۸۸۶,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 886000,
+      "stock": 25,
+      "unit": "تیوپ",
+      "image_emoji": "🧴",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 10,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.product",
+    "pk": 32,
+    "fields": {
+      "brand": 3,
+      "name": "چسب استریل فاپسکو",
+      "category": "adhesive",
+      "wound_type": "all",
+      "description": "چسب پانسمان استریل. قیمت: ۲۶۰,۰۰۰ تومان. از کاتالوگ wounda.ir",
+      "price": 260000,
+      "stock": 120,
+      "unit": "عدد",
+      "image_emoji": "🩹",
+      "image_url": "",
+      "is_active": true,
+      "low_stock_threshold": 20,
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 1,
+    "fields": {
+      "name": "دکتر مریم احمدی",
+      "type": "wound_specialist",
+      "contact_person": "دکتر مریم احمدی",
+      "phone": "0912-345-6789",
+      "email": "ahmadi@woundcare.ir",
+      "city": "تهران",
+      "address": "تهران، خیابان ولیعصر",
+      "workplace": "کلینیک تخصصی زخم شفا",
+      "work_history": "۱۲ سال سابقه در درمان زخم‌های دیابتی و مزمن",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "متخصص زخم دیابتی",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 2,
+    "fields": {
+      "name": "کلینیک تخصصی زخم شفا",
+      "type": "wound_clinic",
+      "contact_person": "دکتر احمدی",
+      "phone": "021-2201-3344",
+      "email": "info@woundclinic-shafa.ir",
+      "city": "تهران",
+      "address": "تهران، خیابان ولیعصر، بالاتر از پارک‌وی",
+      "workplace": "کلینیک تخصصی زخم",
+      "work_history": "۸ سال فعالیت تخصصی",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "کلینیک همکار اصلی",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 3,
+    "fields": {
+      "name": "بیمارستان دیابت ایران",
+      "type": "wound_hospital",
+      "contact_person": "دکتر لاریجانی",
+      "phone": "021-2288-4400",
+      "email": "info@diabet-iran.ir",
+      "city": "تهران",
+      "address": "تهران، خیابان فرشته",
+      "workplace": "بخش مراقبت ویژه دیابتی",
+      "work_history": "بخش تخصصی زخم دیابتی با ۸۰ تخت",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "بیمارستان اصلی همکار",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 4,
+    "fields": {
+      "name": "بیمارستان استاد مطهری",
+      "type": "wound_hospital",
+      "contact_person": "دکتر اکبری",
+      "phone": "051-3840-1122",
+      "email": "info@motahari-hospital.ir",
+      "city": "مشهد",
+      "address": "مشهد، بلوار وکیل‌آباد",
+      "workplace": "بخش جراحی و زخم",
+      "work_history": "۱۰۰ تخت فعال بخش زخم",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 5,
+    "fields": {
+      "name": "داروخانه ۲۴ ساعته شفایاب",
+      "type": "pharmacy",
+      "contact_person": "آقای رضایی",
+      "phone": "021-3344-5566",
+      "email": "",
+      "city": "تهران",
+      "address": "تهران، میدان انقلاب",
+      "workplace": "داروخانه",
+      "work_history": "۵ سال فعالیت در فروش محصولات زخم",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "داروخانه همکار",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 6,
+    "fields": {
+      "name": "کلینیک دیابت البرز",
+      "type": "diabetes_clinic",
+      "contact_person": "دکتر صادقی",
+      "phone": "026-3222-1100",
+      "email": "info@alborz-diabetes.ir",
+      "city": "کرج",
+      "address": "کرج، بلوار طالقانی",
+      "workplace": "کلینیک تخصصی دیابت",
+      "work_history": "۷ سال فعالیت در زمینه مراقبت از پای دیابتی",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "کلینیک دیابت همکار",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 7,
+    "fields": {
+      "name": "دکتر رضا کریمی",
+      "type": "infectious_doctor",
+      "contact_person": "دکتر رضا کریمی",
+      "phone": "0913-222-1111",
+      "email": "karimi@woundcare.ir",
+      "city": "تهران",
+      "address": "تهران، خیابان شریعتی",
+      "workplace": "بیمارستان امیرالمؤمنین",
+      "work_history": "۸ سال سابقه در بیماری‌های عفونی و زخم‌های عفونی",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "متخصص بیماری‌های عفونی",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 8,
+    "fields": {
+      "name": "دکتر سحر نوری",
+      "type": "wound_specialist",
+      "contact_person": "دکتر سحر نوری",
+      "phone": "0911-888-9999",
+      "email": "nouri@woundcare.ir",
+      "city": "اصفهان",
+      "address": "اصفهان، خیابان چهارباغ",
+      "workplace": "مرکز درمانی سبز",
+      "work_history": "۱۴ سال سابقه در دبریدمان و ترمیم زخم",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "متخصص طب فیزیکی و ترمیم",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 9,
+    "fields": {
+      "name": "دکتر علی حسینی",
+      "type": "wound_specialist",
+      "contact_person": "دکتر علی حسینی",
+      "phone": "0915-444-3333",
+      "email": "hosseini@woundcare.ir",
+      "city": "شیراز",
+      "address": "شیراز، خیابان زند",
+      "workplace": "کلینیک پوست و زیبایی پارس",
+      "work_history": "۱۰ سال سابقه در زخم‌های مزمن پوستی",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 10,
+    "fields": {
+      "name": "بیمارستان میلاد",
+      "type": "wound_hospital",
+      "contact_person": "دکتر رحیمی",
+      "phone": "021-8377-0000",
+      "email": "info@milad-hospital.ir",
+      "city": "تهران",
+      "address": "تهران، بلوار کشاورز",
+      "workplace": "بخش جراحی پلاستیک و زخم",
+      "work_history": "بخش تخصصی زخم با ۵۰ تخت",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 11,
+    "fields": {
+      "name": "داروخانه دکتر شفا",
+      "type": "pharmacy",
+      "contact_person": "خانم محمدی",
+      "phone": "051-3839-2233",
+      "email": "",
+      "city": "مشهد",
+      "address": "مشهد، خیابان امام",
+      "workplace": "داروخانه",
+      "work_history": "۳ سال فروش محصولات زخم",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.customer",
+    "pk": 12,
+    "fields": {
+      "name": "کلینیک دیابت نور",
+      "type": "diabetes_clinic",
+      "contact_person": "دکتر قاسمی",
+      "phone": "031-3666-7788",
+      "email": "info@noor-diabetes.ir",
+      "city": "اصفهان",
+      "address": "اصفهان، خیابان هشت بهشت",
+      "workplace": "کلینیک تخصصی دیابت",
+      "work_history": "۵ سال مراقبت پای دیابتی",
+      "commission_rate": "20.00",
+      "status": "active",
+      "notes": "",
+      "created_at": "2026-01-01T00:00:00",
+      "updated_at": "2026-01-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.consultation",
+    "pk": 1,
+    "fields": {
+      "customer_name": "آقای کریمی",
+      "phone": "0912-111-2233",
+      "wound_type": "diabetic",
+      "question": "زخم پای دیابتی دارم و نمی‌خواهد ترمیم شود. چه پانسمانی پیشنهاد می‌کنید؟",
+      "answer": "برای زخم دیابتی با ترشح متوسط، پانسمان هیدروکلوئیدی یا فوم پیشنهاد می‌شود. در صورت عفونت، پانسمان حاوی نقره توصیه می‌گردد.",
+      "answered_by": "دکتر مریم احمدی",
+      "status": "answered",
+      "created_at": "2026-02-01T10:00:00",
+      "answered_at": "2026-02-01T11:30:00"
+    }
+  },
+  {
+    "model": "crm.consultation",
+    "pk": 2,
+    "fields": {
+      "customer_name": "خانم رضایی",
+      "phone": "0913-222-3344",
+      "wound_type": "pressure",
+      "question": "مادرم زخم بستر دارد. بهترین پانسمان چیست؟",
+      "answer": "برای زخم بستر درجه ۲، پانسمان هیدروکلوئیدی مناسب است. اگر ترشح زیاد است از پانسمان فوم استفاده کنید.",
+      "answered_by": "دکتر سحر نوری",
+      "status": "answered",
+      "created_at": "2026-02-15T14:00:00",
+      "answered_at": "2026-02-15T15:00:00"
+    }
+  },
+  {
+    "model": "crm.consultation",
+    "pk": 3,
+    "fields": {
+      "customer_name": "آقای محمدی",
+      "phone": "0915-555-6677",
+      "wound_type": "venous",
+      "question": "زخم وریدی پا دارم و ترشح زیادی دارد. چه کنم؟",
+      "answer": "",
+      "answered_by": "",
+      "status": "pending",
+      "created_at": "2026-03-01T09:00:00",
+      "answered_at": null
+    }
+  },
+  {
+    "model": "crm.satisfactionreview",
+    "pk": 1,
+    "fields": {
+      "customer": 2,
+      "rating": 5,
+      "comment": "بسیار راضی هستیم. محصولات باکیفیت و تحویل به موقع.",
+      "product_quality": 5,
+      "service_quality": 5,
+      "delivery_speed": 4,
+      "created_at": "2026-02-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.satisfactionreview",
+    "pk": 2,
+    "fields": {
+      "customer": 3,
+      "rating": 4,
+      "comment": "کیفیت محصولات عالی اما قیمت‌ها کمی بالاست.",
+      "product_quality": 5,
+      "service_quality": 4,
+      "delivery_speed": 4,
+      "created_at": "2026-02-15T00:00:00"
+    }
+  },
+  {
+    "model": "crm.satisfactionreview",
+    "pk": 3,
+    "fields": {
+      "customer": 1,
+      "rating": 5,
+      "comment": "همکاری عالی و پورسانت به‌موقع پرداخت می‌شود.",
+      "product_quality": 5,
+      "service_quality": 5,
+      "delivery_speed": 5,
+      "created_at": "2026-03-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.satisfactionreview",
+    "pk": 4,
+    "fields": {
+      "customer": 4,
+      "rating": 5,
+      "comment": "تجهیز کامل بخش زخم بیمارستان. ممنون.",
+      "product_quality": 5,
+      "service_quality": 5,
+      "delivery_speed": 5,
+      "created_at": "2026-03-15T00:00:00"
+    }
+  },
+  {
+    "model": "crm.satisfactionreview",
+    "pk": 5,
+    "fields": {
+      "customer": 5,
+      "rating": 4,
+      "comment": "خوب اما گاهی موجودی کم می‌شود.",
+      "product_quality": 4,
+      "service_quality": 4,
+      "delivery_speed": 3,
+      "created_at": "2026-04-01T00:00:00"
+    }
+  },
+  {
+    "model": "crm.order",
+    "pk": 1,
+    "fields": {
+      "number": "ORD-0001",
+      "customer": 2,
+      "status": "confirmed_received",
+      "payment_status": "paid",
+      "notes": "سفارش اول کلینیک زخم شفا",
+      "commission_amount": 309000,
+      "created_at": "2026-02-01T10:00:00",
+      "updated_at": "2026-02-01T10:00:00"
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 1,
+    "fields": {
+      "order": 1,
+      "product": 1,
+      "quantity": 2,
+      "unit_price": 480000
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 2,
+    "fields": {
+      "order": 1,
+      "product": 5,
+      "quantity": 3,
+      "unit_price": 195000
+    }
+  },
+  {
+    "model": "crm.order",
+    "pk": 2,
+    "fields": {
+      "number": "ORD-0002",
+      "customer": 3,
+      "status": "confirmed_received",
+      "payment_status": "paid",
+      "notes": "سفارش ماهانه بیمارستان دیابت",
+      "commission_amount": 766600,
+      "created_at": "2026-02-15T12:00:00",
+      "updated_at": "2026-02-15T12:00:00"
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 3,
+    "fields": {
+      "order": 2,
+      "product": 11,
+      "quantity": 5,
+      "unit_price": 503000
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 4,
+    "fields": {
+      "order": 2,
+      "product": 10,
+      "quantity": 2,
+      "unit_price": 659000
+    }
+  },
+  {
+    "model": "crm.order",
+    "pk": 3,
+    "fields": {
+      "number": "ORD-0003",
+      "customer": 4,
+      "status": "shipped",
+      "payment_status": "partial",
+      "notes": "سفارش بیمارستان مطهری",
+      "commission_amount": 794000,
+      "created_at": "2026-03-01T09:00:00",
+      "updated_at": "2026-03-01T09:00:00"
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 5,
+    "fields": {
+      "order": 3,
+      "product": 7,
+      "quantity": 3,
+      "unit_price": 680000
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 6,
+    "fields": {
+      "order": 3,
+      "product": 13,
+      "quantity": 5,
+      "unit_price": 386000
+    }
+  },
+  {
+    "model": "crm.order",
+    "pk": 4,
+    "fields": {
+      "number": "ORD-0004",
+      "customer": 1,
+      "status": "delivered",
+      "payment_status": "paid",
+      "notes": "",
+      "commission_amount": 294000,
+      "created_at": "2026-03-15T14:00:00",
+      "updated_at": "2026-03-15T14:00:00"
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 7,
+    "fields": {
+      "order": 4,
+      "product": 1,
+      "quantity": 1,
+      "unit_price": 620000
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 8,
+    "fields": {
+      "order": 4,
+      "product": 9,
+      "quantity": 2,
+      "unit_price": 425000
+    }
+  },
+  {
+    "model": "crm.invoice",
+    "pk": 1,
+    "fields": {
+      "number": "INV-1403-0001",
+      "order": 1,
+      "customer": 2,
+      "type": "invoice",
+      "amount": 1050000,
+      "tax": 105000,
+      "total": 1155000,
+      "status": "paid",
+      "issue_date": "2026-02-01",
+      "due_date": "2026-02-15",
+      "notes": "",
+      "created_at": "2026-02-01T10:30:00",
+      "updated_at": "2026-02-01T10:30:00"
+    }
+  },
+  {
+    "model": "crm.invoice",
+    "pk": 2,
+    "fields": {
+      "number": "INV-1403-0002",
+      "order": 2,
+      "customer": 3,
+      "type": "invoice",
+      "amount": 3833000,
+      "tax": 383300,
+      "total": 4216300,
+      "status": "paid",
+      "issue_date": "2026-02-15",
+      "due_date": "2026-03-01",
+      "notes": "",
+      "created_at": "2026-02-15T12:30:00",
+      "updated_at": "2026-02-15T12:30:00"
+    }
+  },
+  {
+    "model": "crm.invoice",
+    "pk": 3,
+    "fields": {
+      "number": "PRE-1403-0003",
+      "order": 3,
+      "customer": 4,
+      "type": "pre_invoice",
+      "amount": 3850000,
+      "tax": 385000,
+      "total": 4235000,
+      "status": "sent_for_approval",
+      "issue_date": "2026-03-01",
+      "due_date": null,
+      "notes": "پیش فاکتور",
+      "created_at": "2026-03-01T09:30:00",
+      "updated_at": "2026-03-01T09:30:00"
+    }
+  },
+  {
+    "model": "crm.payment",
+    "pk": 1,
+    "fields": {
+      "invoice": 1,
+      "customer": 2,
+      "amount": 1155000,
+      "method": "transfer",
+      "status": "confirmed",
+      "transaction_ref": "TR-99887766",
+      "notes": "واریز بانکی",
+      "created_at": "2026-02-02T09:00:00"
+    }
+  },
+  {
+    "model": "crm.payment",
+    "pk": 2,
+    "fields": {
+      "invoice": 2,
+      "customer": 3,
+      "amount": 4216300,
+      "method": "cheque",
+      "status": "confirmed",
+      "transaction_ref": "CH-11002233",
+      "notes": "چک",
+      "created_at": "2026-02-16T10:00:00"
+    }
+  },
+  {
+    "model": "crm.payment",
+    "pk": 3,
+    "fields": {
+      "invoice": 3,
+      "customer": 4,
+      "amount": 2000000,
+      "method": "card",
+      "status": "pending",
+      "transaction_ref": "CR-55667788",
+      "notes": "پرداخت جزئی",
+      "created_at": "2026-03-02T11:00:00"
+    }
+  },
+  {
+    "model": "crm.commission",
+    "pk": 1,
+    "fields": {
+      "customer": 2,
+      "order": 1,
+      "rate": "20.00",
+      "base_amount": 1545000,
+      "commission_amount": 309000,
+      "status": "paid",
+      "paid_at": "2026-02-10T12:00:00",
+      "notes": "پورسانت سفارش ۱",
+      "created_at": "2026-02-05T10:00:00"
+    }
+  },
+  {
+    "model": "crm.commission",
+    "pk": 2,
+    "fields": {
+      "customer": 3,
+      "order": 2,
+      "rate": "20.00",
+      "base_amount": 3833000,
+      "commission_amount": 766600,
+      "status": "approved",
+      "paid_at": null,
+      "notes": "پورسانت سفارش ۲",
+      "created_at": "2026-02-20T10:00:00"
+    }
+  },
+  {
+    "model": "crm.warehousemovement",
+    "pk": 1,
+    "fields": {
+      "type": "in",
+      "product": 1,
+      "quantity": 200,
+      "reason": "purchase",
+      "reference": "فاکتور خرید ۲۲۵۵",
+      "operator": "زهرا موسوی",
+      "notes": "خرید اولیه",
+      "created_at": "2026-01-15T09:00:00"
+    }
+  },
+  {
+    "model": "crm.warehousemovement",
+    "pk": 2,
+    "fields": {
+      "type": "out",
+      "product": 1,
+      "quantity": 55,
+      "reason": "order_delivery",
+      "reference": "ORD-0001",
+      "operator": "علی محمدی",
+      "notes": "",
+      "created_at": "2026-02-01T11:00:00"
+    }
+  },
+  {
+    "model": "crm.warehousemovement",
+    "pk": 3,
+    "fields": {
+      "type": "in",
+      "product": 5,
+      "quantity": 150,
+      "reason": "purchase",
+      "reference": "فاکتور خرید ۲۲۶۰",
+      "operator": "زهرا موسوی",
+      "notes": "",
+      "created_at": "2026-01-20T10:00:00"
+    }
+  },
+  {
+    "model": "crm.warehousemovement",
+    "pk": 4,
+    "fields": {
+      "type": "out",
+      "product": 5,
+      "quantity": 50,
+      "reason": "order_delivery",
+      "reference": "ORD-0004",
+      "operator": "علی محمدی",
+      "notes": "",
+      "created_at": "2026-03-15T15:00:00"
+    }
+  },
+  {
+    "model": "crm.warehousemovement",
+    "pk": 5,
+    "fields": {
+      "type": "in",
+      "product": 11,
+      "quantity": 100,
+      "reason": "purchase",
+      "reference": "فاکتور خرید ۲۲۶۵",
+      "operator": "زهرا موسوی",
+      "notes": "",
+      "created_at": "2026-02-01T08:00:00"
+    }
+  },
+  {
+    "model": "crm.warehousemovement",
+    "pk": 6,
+    "fields": {
+      "type": "out",
+      "product": 11,
+      "quantity": 46,
+      "reason": "order_delivery",
+      "reference": "ORD-0002",
+      "operator": "علی محمدی",
+      "notes": "",
+      "created_at": "2026-02-15T13:00:00"
+    }
+  },
+  {
+    "model": "crm.warehousemovement",
+    "pk": 7,
+    "fields": {
+      "type": "in",
+      "product": 10,
+      "quantity": 80,
+      "reason": "purchase",
+      "reference": "فاکتور خرید ۲۲۷۰",
+      "operator": "زهرا موسوی",
+      "notes": "",
+      "created_at": "2026-02-10T09:00:00"
+    }
+  },
+  {
+    "model": "crm.warehousemovement",
+    "pk": 8,
+    "fields": {
+      "type": "out",
+      "product": 7,
+      "quantity": 15,
+      "reason": "order_delivery",
+      "reference": "ORD-0003",
+      "operator": "علی محمدی",
+      "notes": "",
+      "created_at": "2026-03-01T10:00:00"
+    }
+  },
+  {
+    "model": "crm.dailyreport",
+    "pk": 1,
+    "fields": {
+      "presenter_name": "دکتر مریم احمدی",
+      "report_date": "2026-03-01",
+      "activity_type": "visit",
+      "customer": 3,
+      "visits_count": 12,
+      "calls_count": 8,
+      "products_presented": 15,
+      "new_customers": 2,
+      "sales_amount": 4250000,
+      "notes": "ویزیت بیمارستان دیابت ایران",
+      "created_at": "2026-03-01T18:00:00"
+    }
+  },
+  {
+    "model": "crm.dailyreport",
+    "pk": 2,
+    "fields": {
+      "presenter_name": "پرستار زهرا موسوی",
+      "report_date": "2026-03-01",
+      "activity_type": "presentation",
+      "customer": 2,
+      "visits_count": 18,
+      "calls_count": 12,
+      "products_presented": 24,
+      "new_customers": 5,
+      "sales_amount": 5860000,
+      "notes": "ارائه پرزنت در کلینیک زخم شفا",
+      "created_at": "2026-03-01T18:00:00"
+    }
+  },
+  {
+    "model": "crm.dailyreport",
+    "pk": 3,
+    "fields": {
+      "presenter_name": "دکتر رضا کریمی",
+      "report_date": "2026-02-28",
+      "activity_type": "call",
+      "customer": 7,
+      "visits_count": 5,
+      "calls_count": 20,
+      "products_presented": 10,
+      "new_customers": 1,
+      "sales_amount": 2100000,
+      "notes": "تماس‌های پیگیری",
+      "created_at": "2026-02-28T18:00:00"
+    }
+  },
+  {
+    "model": "crm.dailyreport",
+    "pk": 4,
+    "fields": {
+      "presenter_name": "دکتر سحر نوری",
+      "report_date": "2026-02-28",
+      "activity_type": "visit",
+      "customer": 8,
+      "visits_count": 14,
+      "calls_count": 6,
+      "products_presented": 22,
+      "new_customers": 3,
+      "sales_amount": 4890000,
+      "notes": "ویزیت مرکز درمانی سبز اصفهان",
+      "created_at": "2026-02-28T18:00:00"
+    }
+  },
+  {
+    "model": "crm.productrequest",
+    "pk": 1,
+    "fields": {
+      "customer": 3,
+      "product_name": "پانسمان هیدروکل نازک هارتمن",
+      "product": 1,
+      "quantity": 200,
+      "unit": "عدد",
+      "notes": "برای بخش مراقبت‌های ویژه دیابتی، نیاز فوری",
+      "status": "completed",
+      "sent_to_finance_at": "2026-02-05T08:00:00",
+      "sent_to_warehouse_at": "2026-02-06T09:00:00",
+      "sent_to_procurement_at": null,
+      "created_at": "2026-02-05T07:00:00",
+      "updated_at": "2026-02-10T10:00:00"
+    }
+  },
+  {
+    "model": "crm.productrequest",
+    "pk": 2,
+    "fields": {
+      "customer": 4,
+      "product_name": "پانسمان نقره سیلورمد",
+      "product": 18,
+      "quantity": 50,
+      "unit": "عدد",
+      "notes": "زخم عفونی مزمن، تأمین اضطراری",
+      "status": "in_progress",
+      "sent_to_finance_at": "2026-03-01T10:00:00",
+      "sent_to_warehouse_at": "2026-03-02T09:00:00",
+      "sent_to_procurement_at": "2026-03-03T08:00:00",
+      "created_at": "2026-03-01T09:00:00",
+      "updated_at": "2026-03-05T10:00:00"
+    }
+  },
+  {
+    "model": "crm.productrequest",
+    "pk": 3,
+    "fields": {
+      "customer": 2,
+      "product_name": "پانسمان طبافلکس پرو",
+      "product": 14,
+      "quantity": 100,
+      "unit": "عدد",
+      "notes": "تأمین موجودی برای ماه آینده",
+      "status": "sent_to_finance",
+      "sent_to_finance_at": "2026-03-10T14:00:00",
+      "sent_to_warehouse_at": null,
+      "sent_to_procurement_at": null,
+      "created_at": "2026-03-10T13:00:00",
+      "updated_at": "2026-03-10T14:00:00"
+    }
+  },
+  {
+    "model": "crm.order",
+    "pk": 5,
+    "fields": {
+      "number": "ORD-0005",
+      "customer": 5,
+      "status": "pending",
+      "payment_status": "unpaid",
+      "notes": "سفارش نمونه در وضعیت در انتظار — برای نمایش مرحله اول گردش‌کار",
+      "commission_amount": 549800,
+      "payment_receipt": "",
+      "created_at": "2026-11-12T10:00:00",
+      "updated_at": "2026-11-12T10:00:00"
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 9,
+    "fields": {
+      "order": 5,
+      "product": 1,
+      "quantity": 2,
+      "unit_price": 620000
+    }
+  },
+  {
+    "model": "crm.orderitem",
+    "pk": 10,
+    "fields": {
+      "order": 5,
+      "product": 11,
+      "quantity": 3,
+      "unit_price": 503000
+    }
+  }
+]
